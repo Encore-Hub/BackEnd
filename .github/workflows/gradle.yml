@@ -41,6 +41,7 @@ jobs:
 
     - name: Build with Gradle Wrapper
       run: |
+        touch ./src/main/resources/application.properties
         echo ${{secrets.APPLICATION_SECRET}} | base64 --decode > ./src/main/resources/application.properties
         ./gradlew build -x test
 
