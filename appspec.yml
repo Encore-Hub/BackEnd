@@ -1,0 +1,15 @@
+version: 0.0
+os: linux
+
+files:
+  - source: /
+    destination: /home/ubuntu/encorehub
+permissions:
+  - object: /home/ubuntu/encorehub/
+    owner: ubuntu
+    group: ubuntu
+hooks:
+  AfterInstall:
+    - location: scripts/deploy.sh
+      timeout: 60
+      runas: ubuntu
