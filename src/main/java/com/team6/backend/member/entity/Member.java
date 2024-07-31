@@ -1,4 +1,4 @@
-package com.team6.backend.members.entity;
+package com.team6.backend.member.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -19,22 +19,20 @@ public class Member {
     @Column(name = "member_id")
     private Long id;
 
-    private String name;
-
-    @Column(unique = true)
-    private String userId;
+    @Column(nullable = false, unique = true)
+    private String email;
 
     @Column(nullable = false)
     private String password;
 
-    @Column(unique = true)
-    private String email;
+    @Column(nullable = false)
+    private String username;
 
-    @Column(unique = true)
-    private String phoneNumber;
-
-    @Column(unique = true)
+    @Column(nullable = false, unique = true)
     private String nickname;
+
+    @Column(nullable = false, unique = true)
+    private String phoneNumber;
 
     private String role = "USER";
 }

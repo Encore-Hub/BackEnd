@@ -1,12 +1,13 @@
-package com.team6.backend.members.service;
+package com.team6.backend.member.service;
 
 import com.team6.backend.common.exception.EncoreHubException;
 import com.team6.backend.config.jwt.JwtUtil;
-import com.team6.backend.members.dto.request.MemberLoginRequestDto;
-import com.team6.backend.members.dto.request.MemberSignupRequestDto;
-import com.team6.backend.members.dto.response.MemberLoginResponseDto;
-import com.team6.backend.members.entity.Member;
-import com.team6.backend.members.repository.MemberRepository;
+import com.team6.backend.member.dto.request.MemberLoginRequestDto;
+import com.team6.backend.member.dto.request.MemberSignupRequestDto;
+import com.team6.backend.member.dto.response.MemberInfoResponseDto;
+import com.team6.backend.member.dto.response.MemberLoginResponseDto;
+import com.team6.backend.member.entity.Member;
+import com.team6.backend.member.repository.MemberRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,20 +24,22 @@ public class MemberService {
     private final MemberValidator memberValidator;
     private final JwtUtil jwtUtil;
 
+    // 회원가입
     public void signup(MemberSignupRequestDto requestDto) {
-        memberValidator.validateEmail(requestDto.getEmail());
+        memberValidator.validateSignup(requestDto);
         String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
         Member member = requestDto.toEntity(encodedPassword);
         memberRepository.save(member);
     }
 
+    // 로그인
     public MemberLoginResponseDto login(MemberLoginRequestDto requestDto, HttpServletResponse response) {
-        Member member = memberRepository.findByUserId(requestDto.getUserId()).orElseThrow(
+        Member member = memberRepository.findByEmail(requestDto.getEmail()).orElseThrow(
                 () -> new EncoreHubException(NOT_FOUND_MEMBER)
         );
         memberValidator.validateMatchPassword(requestDto.getPassword(), member.getPassword());
-        response.addHeader(AUTHORIZATION_HEADER, jwtUtil.createToken(member.getUserId(), member.getRole()));
-        boolean isExistUserId = memberValidator.validateExistUserId(member);
-        return new MemberLoginResponseDto(isExistUserId);
+        response.addHeader(AUTHORIZATION_HEADER, jwtUtil.createToken(member.getEmail(), member.getRole()));
+        boolean isExistEmail = memberValidator.validateExistEmail(member);
+        return new MemberLoginResponseDto(isExistEmail);
     }
 }

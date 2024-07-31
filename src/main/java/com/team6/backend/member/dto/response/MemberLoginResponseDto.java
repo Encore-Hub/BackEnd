@@ -1,12 +1,12 @@
-package com.team6.backend.members.dto.response;
+package com.team6.backend.member.dto.response;
 
 import lombok.Getter;
 
 @Getter
 public class MemberLoginResponseDto {
-    private Boolean isExistUserId;
+    private Boolean isExistEmail;
 
     public MemberLoginResponseDto(Boolean isExistUserId) {
-        this.isExistUserId = isExistUserId;
+        this.isExistEmail = isExistUserId;
     }
 }
