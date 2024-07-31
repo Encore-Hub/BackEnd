@@ -4,7 +4,6 @@ import com.team6.backend.common.exception.EncoreHubException;
 import com.team6.backend.config.jwt.JwtUtil;
 import com.team6.backend.member.dto.request.MemberLoginRequestDto;
 import com.team6.backend.member.dto.request.MemberSignupRequestDto;
-import com.team6.backend.member.dto.response.MemberInfoResponseDto;
 import com.team6.backend.member.dto.response.MemberLoginResponseDto;
 import com.team6.backend.member.entity.Member;
 import com.team6.backend.member.repository.MemberRepository;
