@@ -1,9 +1,9 @@
-package com.team6.backend.members.dto.request;
+package com.team6.backend.member.dto.request;
 
 import lombok.Getter;
 
 @Getter
 public class MemberLoginRequestDto {
-    private String userId;
+    private String email;
     private String password;
 }
