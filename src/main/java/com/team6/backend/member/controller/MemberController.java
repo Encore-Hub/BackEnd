@@ -1,17 +1,18 @@
 package com.team6.backend.member.controller;
 
 import com.team6.backend.common.response.ResponseMessage;
-import com.team6.backend.config.jwt.JwtUtil;
 import com.team6.backend.member.dto.request.MemberLoginRequestDto;
 import com.team6.backend.member.dto.request.MemberSignupRequestDto;
-import com.team6.backend.member.dto.response.MemberInfoResponseDto;
 import com.team6.backend.member.dto.response.MemberLoginResponseDto;
 import com.team6.backend.member.service.MemberService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
