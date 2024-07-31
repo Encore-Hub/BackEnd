@@ -13,7 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import static com.team6.backend.common.exception.ErrorCode.NOT_FOUND_MEMBER;
-import static com.team6.backend.config.jwt.JwtUtil.AUTHORIZATION_HEADER;
+import static com.team6.backend.config.jwt.JwtUtil.AUTHORIZATION_ACCESS;
+import static com.team6.backend.config.jwt.JwtUtil.AUTHORIZATION_REFRESH;
 
 @Service
 @RequiredArgsConstructor
@@ -37,7 +38,8 @@ public class MemberService {
                 () -> new EncoreHubException(NOT_FOUND_MEMBER)
         );
         memberValidator.validateMatchPassword(requestDto.getPassword(), member.getPassword());
-        response.addHeader(AUTHORIZATION_HEADER, jwtUtil.createToken(member.getEmail(), member.getRole()));
+        response.addHeader(AUTHORIZATION_ACCESS, jwtUtil.createAccessToken(member.getEmail(), member.getRole()));
+        response.addHeader(AUTHORIZATION_REFRESH, jwtUtil.createRefreshToken());
         boolean isExistEmail = memberValidator.validateExistEmail(member);
         return new MemberLoginResponseDto(isExistEmail);
     }
