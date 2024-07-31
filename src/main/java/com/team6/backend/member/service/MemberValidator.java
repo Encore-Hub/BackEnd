@@ -1,8 +1,9 @@
-package com.team6.backend.members.service;
+package com.team6.backend.member.service;
 
 import com.team6.backend.common.exception.EncoreHubException;
-import com.team6.backend.members.entity.Member;
-import com.team6.backend.members.repository.MemberRepository;
+import com.team6.backend.member.dto.request.MemberSignupRequestDto;
+import com.team6.backend.member.entity.Member;
+import com.team6.backend.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,11 +20,11 @@ public class MemberValidator {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public void validateUserId(String userId) {
-        Optional<Member> memberOpt = memberRepository.findByUserId(userId);
-        if (memberOpt.isPresent()) {
-            throw new EncoreHubException(DUPLICATED_USERID);
-        }
+    public void validateSignup(MemberSignupRequestDto requestDto) {
+        validateEmail(requestDto.getEmail());
+        validateNickname(requestDto.getNickname());
+        validatePhoneNumber(requestDto.getPhoneNumber());
+        confirmPassword(requestDto.getPassword(), requestDto.getConfirmPassword());
     }
 
     public void validateEmail(String email) {
@@ -47,19 +48,23 @@ public class MemberValidator {
         }
     }
 
+    public void confirmPassword(String password, String confirmPassword) {
+        if (!password.equals(confirmPassword)) {
+            throw new EncoreHubException(DUPLICATED_PASSWORD);
+        }
+    }
+
     public void validateMatchPassword(String storedPassword, String password){
         if(!passwordEncoder.matches(storedPassword, password)){
             throw new EncoreHubException(NOT_VALID_PASSWORD);
         }
     }
 
-    public boolean validateExistUserId(Member member) {
-        boolean isExistUserId = true;
-        if (member.getUserId() == null) {
-            isExistUserId = false;
+    public boolean validateExistEmail(Member member) {
+        boolean isExistEmail = true;
+        if (member.getEmail() == null) {
+            isExistEmail = false;
         }
-        return isExistUserId;
+        return isExistEmail;
     }
-
-
 }
