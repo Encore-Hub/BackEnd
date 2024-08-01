@@ -3,33 +3,30 @@ package com.team6.backend.config.jwt;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 
 @Component
 public class JwtUtil {
-
-    public static final String AUTHORIZATION_HEADER = "Authorization";
+    public static final String AUTHORIZATION_ACCESS = "AccessToken";
+    public static final String AUTHORIZATION_REFRESH = "RefreshToken";
     public static final String AUTHORIZATION_KEY = "auth";
     private static final String BEARER_PREFIX = "Bearer ";
     private static final long TOKEN_TIME = 30 * 60 * 1000L; // 토큰 만료 시간: 30분
 
-    @Value("${spring.jwt.secret.key}")
-    private String secretKey;
-    private Key key;
+    @Value("${spring.jwt.secret.key.access}")
+    private String accessTokenSecretKey;
+    @Value("${spring.jwt.secret.key.refresh}")
+    private String refreshTokenSecretKey;
+    private Key accessTokenKey;
+    private Key refreshTokenKey;
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
     public static final Logger logger = LoggerFactory.getLogger("JWT 관련 로그");
@@ -37,12 +34,15 @@ public class JwtUtil {
     // secretKey를 Decoding해서 key에 담는다.
     @PostConstruct
     public void init() {
-        byte[] bytes = Base64.getDecoder().decode(secretKey); //디코딩
-        key = Keys.hmacShaKeyFor(bytes); // 담기
+        byte[] accessTokenBytes = Base64.getDecoder().decode(accessTokenSecretKey);
+        accessTokenKey = Keys.hmacShaKeyFor(accessTokenBytes);
+
+        byte[] refreshTokenBytes = Base64.getDecoder().decode(refreshTokenSecretKey);
+        refreshTokenKey = Keys.hmacShaKeyFor(refreshTokenBytes);
     }
 
-    // JWT(토큰) 생성
-    public String createToken(String email, String role) {
+    // JWT(Access Token) 생성
+    public String createAccessToken(String email, String role) {
         Date date = new Date();
 
         return BEARER_PREFIX +
@@ -51,29 +51,25 @@ public class JwtUtil {
                         .claim(AUTHORIZATION_KEY, role) // 사용자 권한
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME)) // 만료 시간
                         .setIssuedAt(date) // 발급일
-                        .signWith(key, signatureAlgorithm) // 암호화 알고리즘 *****
+                        .signWith(accessTokenKey, signatureAlgorithm) // 암호화 알고리즘 *****
                         .compact();
     }
 
-    // 생성된 JWT Cookie 에 저장
-    public void addJwtToCookie(String token, HttpServletResponse response) {
-        try {
-            token = URLEncoder.encode(token, "utf-8").replaceAll("\\+", "%20"); // Cookie Value 에는 공백이 불가능해서 encoding 진행
-
-            Cookie cookie = new Cookie(AUTHORIZATION_HEADER, token); // Name-Value
-            cookie.setPath("/");
-
-            // Response 객체에 Cookie 추가
-            response.addCookie(cookie);
-        } catch (UnsupportedEncodingException e) {
-            logger.error(e.getMessage());
-        }
+    // JWT(Refresh Token) 생성
+    public String createRefreshToken(){
+        Date date = new Date();
+        return BEARER_PREFIX +
+                Jwts.builder()
+                        .setExpiration(new Date(System.currentTimeMillis() + 60 * 24 * 60 * 60 * 1000L))
+                        .setIssuedAt(date)
+                        .signWith(refreshTokenKey, signatureAlgorithm)
+                        .compact();
     }
 
-    // Cookie에 들어있던 JWT 토큰 substring
+    // JWT 토큰 substring
     public String substringToken(String tokenValue) {
         if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
-            return tokenValue.substring(7); //"BEARER " 한칸 띄운 것까지 7자이기 때문에 7
+            return tokenValue.substring(7);
         }
         logger.error("Not Found Token");
         throw new NullPointerException("Not Found Token");
@@ -82,7 +78,7 @@ public class JwtUtil {
     // JWT(토큰) 검증
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token); // 이 한줄로 검증
+            Jwts.parserBuilder().setSigningKey(accessTokenKey).build().parseClaimsJws(token); // 이 한줄로 검증
             return true;
         } catch (SecurityException | MalformedJwtException | SignatureException e) {
             logger.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
@@ -98,23 +94,6 @@ public class JwtUtil {
 
     // JWT(토큰)에서 사용자 정보 가져오기
     public Claims getUserInfoFromToken(String token) {
-        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
-    }
-
-    // HttpServletRequest 에서 Cookie Value : JWT 가져오기
-    public String getTokenFromRequest(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if(cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals(AUTHORIZATION_HEADER)) {
-                    try {
-                        return URLDecoder.decode(cookie.getValue(), "UTF-8"); // Encode 되어 넘어간 Value 다시 Decode
-                    } catch (UnsupportedEncodingException e) {
-                        return null;
-                    }
-                }
-            }
-        }
-        return null;
+        return Jwts.parserBuilder().setSigningKey(accessTokenKey).build().parseClaimsJws(token).getBody();
     }
 }
