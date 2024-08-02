@@ -14,8 +14,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
-import java.util.Collections;
-
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -37,15 +35,15 @@ public class WebSecurityConfig {
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                         CorsConfiguration configuration = new CorsConfiguration();
 
-                        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
-                        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:5173"));
-                        configuration.setAllowedMethods(Collections.singletonList("*"));
+                        configuration.addAllowedOrigin("http://localhost:3000");
+                        configuration.addAllowedOrigin("http://localhost:5173");
+                        configuration.addAllowedMethod("*");
+                        configuration.addAllowedHeader("*");
                         configuration.setAllowCredentials(true);
-                        configuration.setAllowedHeaders(Collections.singletonList("*"));
                         configuration.setMaxAge(3600L);
 
-                        configuration.setExposedHeaders(Collections.singletonList("AccessToken"));
-                        configuration.setExposedHeaders(Collections.singletonList("RefreshToken"));
+                        configuration.addExposedHeader("AccessToken");
+                        configuration.addExposedHeader("RefreshToken");
                         return configuration;
 
                     }
