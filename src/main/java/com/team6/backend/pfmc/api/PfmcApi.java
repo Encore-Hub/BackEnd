@@ -1,12 +1,12 @@
-package com.team6.backend.Pfmc.api;
+package com.team6.backend.pfmc.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.team6.backend.Pfmc.entity.Pfmc;
-import com.team6.backend.Pfmc.entity.PfmcList;
-import com.team6.backend.Pfmc.entity.RelateInfo;
-import com.team6.backend.Pfmc.repository.PfmcListRepository;
-import com.team6.backend.Pfmc.repository.PfmcRepository;
+import com.team6.backend.pfmc.entity.Pfmc;
+import com.team6.backend.pfmc.entity.PfmcList;
+import com.team6.backend.pfmc.entity.RelateInfo;
+import com.team6.backend.pfmc.repository.PfmcListRepository;
+import com.team6.backend.pfmc.repository.PfmcRepository;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
 import org.json.XML;

@@ -1,9 +1,9 @@
-package com.team6.backend.Pfmc.api;
+package com.team6.backend.pfmc.api;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.team6.backend.Pfmc.repository.PfmcListRepository;
+import com.team6.backend.pfmc.repository.PfmcListRepository;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
 import org.json.XML;
@@ -76,7 +76,7 @@ public class PfmcListApi {
             JsonNode dbNode = dbsNode.path("db");
 
             // List로 변환
-            List<com.team6.backend.Pfmc.entity.PfmcList> PfmcList = objectMapper.convertValue(dbNode, new TypeReference<List<com.team6.backend.Pfmc.entity.PfmcList>>() {});
+            List<com.team6.backend.pfmc.entity.PfmcList> PfmcList = objectMapper.convertValue(dbNode, new TypeReference<List<com.team6.backend.pfmc.entity.PfmcList>>() {});
 
             // DB 저장
             PfmcListRepository.saveAll(PfmcList);
