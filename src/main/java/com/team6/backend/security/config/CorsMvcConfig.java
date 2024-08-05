@@ -1,4 +1,4 @@
-package com.team6.backend.config;
+package com.team6.backend.security.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

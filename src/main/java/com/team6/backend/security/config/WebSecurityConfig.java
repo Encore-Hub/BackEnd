@@ -1,5 +1,6 @@
-package com.team6.backend.config;
+package com.team6.backend.security.config;
 
+import com.team6.backend.security.jwt.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -14,12 +15,12 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
-import java.util.Collections;
-
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig {
+
+    private final JwtUtil jwtUtil;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -37,15 +38,15 @@ public class WebSecurityConfig {
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                         CorsConfiguration configuration = new CorsConfiguration();
 
-                        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
-                        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:5173"));
-                        configuration.setAllowedMethods(Collections.singletonList("*"));
+                        configuration.addAllowedOrigin("http://localhost:3000");
+                        configuration.addAllowedOrigin("http://localhost:5173");
+                        configuration.addAllowedMethod("*");
                         configuration.setAllowCredentials(true);
-                        configuration.setAllowedHeaders(Collections.singletonList("*"));
+                        configuration.addAllowedHeader("*");
                         configuration.setMaxAge(3600L);
 
-                        configuration.setExposedHeaders(Collections.singletonList("AccessToken"));
-                        configuration.setExposedHeaders(Collections.singletonList("RefreshToken"));
+                        configuration.addExposedHeader("AccessToken");
+                        configuration.addExposedHeader("RefreshToken");
                         return configuration;
 
                     }
@@ -59,9 +60,11 @@ public class WebSecurityConfig {
                         authorizeHttpRequests
                                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                                 .requestMatchers("/swagger", "/swagger-ui.html", "/swagger-ui/**", "/api-docs", "/api-docs/**", "/v3/api-docs/**").permitAll()
-                                .requestMatchers("/api/member/**").permitAll()
+                                .requestMatchers("/api/member/**", "/api/member/search/**").permitAll()
                                 .anyRequest().authenticated()
+
                 )
+
         ;
 
         return http.build();

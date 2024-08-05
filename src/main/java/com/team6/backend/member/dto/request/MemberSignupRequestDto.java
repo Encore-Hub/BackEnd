@@ -1,6 +1,7 @@
 package com.team6.backend.member.dto.request;
 
 import com.team6.backend.member.entity.Member;
+import com.team6.backend.member.entity.MemberRoleEnum;
 import lombok.Getter;
 
 @Getter
@@ -19,7 +20,7 @@ public class MemberSignupRequestDto {
                 .username(username)
                 .nickname(nickname)
                 .phoneNumber(phoneNumber)
-                .role("USER")
+                .role(MemberRoleEnum.USER)
                 .build();
     }
 }
