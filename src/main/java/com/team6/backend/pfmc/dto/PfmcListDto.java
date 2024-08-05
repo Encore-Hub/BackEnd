@@ -1,4 +1,4 @@
-package com.team6.backend.Pfmc.dto;
+package com.team6.backend.pfmc.dto;
 
 public class PfmcListDto {
 
