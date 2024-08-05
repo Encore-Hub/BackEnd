@@ -1,4 +1,4 @@
-package com.team6.backend.Pfmc.entity;
+package com.team6.backend.pfmc.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
