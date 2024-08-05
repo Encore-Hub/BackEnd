@@ -1,7 +1,7 @@
-package com.team6.backend.Pfmc.controller;
+package com.team6.backend.pfmc.controller;
 
-import com.team6.backend.Pfmc.entity.PfmcList;
-import com.team6.backend.Pfmc.repository.PfmcListRepository;
+import com.team6.backend.pfmc.entity.PfmcList;
+import com.team6.backend.pfmc.repository.PfmcListRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
