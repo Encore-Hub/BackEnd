@@ -13,7 +13,7 @@ import java.util.Optional;
 public class RedisService {
     private final RedisTemplate<String, String> redisTemplate;
 
-    public void setValues(String email, String refreshToken, Duration duration){
+    public void setValues(String email, String refreshToken, Duration duration) {
         ValueOperations<String, String> values = redisTemplate.opsForValue();
         values.set(email, refreshToken, duration);
     }
