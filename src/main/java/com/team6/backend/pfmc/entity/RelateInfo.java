@@ -1,4 +1,4 @@
-package com.team6.backend.Pfmc.entity;
+package com.team6.backend.pfmc.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
