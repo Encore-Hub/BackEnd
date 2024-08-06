@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class LikeResponseDto {
     private String mt20id;
+    private long memberId;
     private boolean liked;
     private long likeCount;
 }

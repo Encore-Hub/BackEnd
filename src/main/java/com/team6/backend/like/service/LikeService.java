@@ -44,7 +44,7 @@ public class LikeService {
         Pfmc pfmc = pfmcRepository.findById(mt20id)
                 .orElseThrow(() -> new ResourceNotFoundException("Performance not found"));
 
-        return likeRepository.countByPrmcAndLiked(pfmc, true);
+        return likeRepository.countByPfmcAndLiked(pfmc, true);
     }
 
     public List<Pfmc> getLikedPerformancesByMember(Long memberId) {

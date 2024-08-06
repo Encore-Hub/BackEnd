@@ -24,7 +24,7 @@ public class LikeController {
         likeService.toggleLike(likeRequestDto.getMt20id(), likeRequestDto.getMemberId());
         boolean isLiked = likeService.isLiked(likeRequestDto.getMt20id(), likeRequestDto.getMemberId());
         long likeCount = likeService.getLikeCount(likeRequestDto.getMt20id());
-        LikeResponseDto responseDto = new LikeResponseDto(likeRequestDto.getMt20id(), isLiked, likeCount);
+        LikeResponseDto responseDto = new LikeResponseDto(likeRequestDto.getMt20id(), likeRequestDto.getMemberId(),isLiked, likeCount);
 
         return ResponseEntity.ok(new ResponseMessage<>("좋아요 상태가 변경되었습니다.", responseDto));
     }

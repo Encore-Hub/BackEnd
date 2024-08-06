@@ -1,4 +1,4 @@
-package com.team6.backend.config;
+package com.team6.backend.security.config;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
