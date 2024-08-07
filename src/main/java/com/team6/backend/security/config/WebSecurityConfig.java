@@ -1,4 +1,4 @@
-package com.team6.backend.config;
+package com.team6.backend.security.config;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 @Configuration
@@ -29,23 +30,25 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf.disable()) // csrf라는 보안을 잠깐 해지함
 
                 .cors((corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
 
                     @Override
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                         CorsConfiguration configuration = new CorsConfiguration();
-
-                        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
-                        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:5173"));
+                        //오리진 허용
+                        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:5173"));
+                        //모든 http 메서드 허용
                         configuration.setAllowedMethods(Collections.singletonList("*"));
+                        // 자격 증명허용
                         configuration.setAllowCredentials(true);
+                        // 모든 헤더 적용
                         configuration.setAllowedHeaders(Collections.singletonList("*"));
-                        configuration.setMaxAge(3600L);
 
-                        configuration.setExposedHeaders(Collections.singletonList("AccessToken"));
-                        configuration.setExposedHeaders(Collections.singletonList("RefreshToken"));
+                        configuration.setMaxAge(3600L);
+                        // 노출한 헤더 설정
+                        configuration.setExposedHeaders(Arrays.asList("AccessToken", "RefreshToken"));
                         return configuration;
 
                     }

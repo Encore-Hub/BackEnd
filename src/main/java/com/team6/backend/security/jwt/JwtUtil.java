@@ -79,6 +79,7 @@ public class JwtUtil {
         return null;
     }
 
+    //
     public boolean validateAccessToken(HttpServletRequest request, HttpServletResponse response) {
         try {
             Jwts.parserBuilder().setSigningKey(accessTokenKey).build().parseClaimsJws(request.getHeader(AUTHORIZATION_ACCESS).substring(7));

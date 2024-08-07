@@ -39,6 +39,7 @@ public class Pfmc {
     private String daehakro;
     private String entrpsnmS;
     @Id
+    @Column(name = "pfmc_id")
     private String mt20id;
     private String entrpsnmP;
     private String visit;

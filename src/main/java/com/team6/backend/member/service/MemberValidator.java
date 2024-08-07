@@ -21,11 +21,12 @@ public class MemberValidator {
     private final PasswordEncoder passwordEncoder;
 
     public void validateSignup(MemberSignupRequestDto requestDto) {
-        validateEmail(requestDto.getEmail());
-        validateNickname(requestDto.getNickname());
-        validatePhoneNumber(requestDto.getPhoneNumber());
-        confirmPassword(requestDto.getPassword(), requestDto.getConfirmPassword());
+        validateEmail(requestDto.getEmail()); //이메일 중복확인
+        validateNickname(requestDto.getNickname()); // 닉네임 중복확인
+        validatePhoneNumber(requestDto.getPhoneNumber()); // 핸드폰번호 중복확인
+        confirmPassword(requestDto.getPassword(), requestDto.getConfirmPassword()); // 비밀번호와 비밀번호 확인값이 같은지?
     }
+
 
     public void validateEmail(String email) {
         Optional<Member> memberOpt = memberRepository.findByEmail(email);
