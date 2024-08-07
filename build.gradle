@@ -54,6 +54,15 @@ dependencies {
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
     implementation 'org.json:json:20210307'
 
+    // Spring Batch Starter 포함, spring-batch-core는 이미 포함되어 있음
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
+
+    // XML 데이터 포맷 처리 라이브러리
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.15.0'
+
+    // WebFlux 관련 라이브러리
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
 }
 
 tasks.named('test') {
