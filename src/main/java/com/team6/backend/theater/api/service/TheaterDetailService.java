@@ -2,8 +2,6 @@ package com.team6.backend.theater.api.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.team6.backend.common.exception.ErrorCode;
-import com.team6.backend.common.exception.TheaterException;
 import com.team6.backend.theater.api.dto.TheaterDetailDto;
 import com.team6.backend.theater.theater.entity.TheaterDetail;
 import com.team6.backend.theater.theater.entity.TheaterId;
@@ -11,8 +9,6 @@ import com.team6.backend.theater.theater.repository.TheaterDetailRepository;
 import com.team6.backend.theater.theater.repository.TheaterIdRepository;
 import org.json.JSONObject;
 import org.json.XML;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -24,8 +20,6 @@ import java.util.Optional;
 
 @Service
 public class TheaterDetailService {
-
-    private static final Logger logger = LoggerFactory.getLogger(TheaterDetailService.class);
 
     @Autowired
     private TheaterDetailRepository theaterDetailRepository;
@@ -41,30 +35,25 @@ public class TheaterDetailService {
 
     private static final int CHUNK_SIZE = 50; // 청크 크기
 
-    public void fetchAndSaveTheaterDetails() {
-        try {
-            List<TheaterId> theaterIds = theaterIdRepository.findAll();
-            logger.info("Total theater IDs fetched from DB: " + theaterIds.size());
+    public void fetchAndSaveTheaterDetails() throws Exception {
+        List<TheaterId> theaterIds = theaterIdRepository.findAll();
+        System.out.println("Total theater IDs fetched from DB: " + theaterIds.size());
 
-            ObjectMapper objectMapper = new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper();
 
-            for (int i = 0; i < theaterIds.size(); i += CHUNK_SIZE) {
-                int end = Math.min(i + CHUNK_SIZE, theaterIds.size());
-                List<TheaterId> chunk = theaterIds.subList(i, end);
+        for (int i = 0; i < theaterIds.size(); i += CHUNK_SIZE) {
+            int end = Math.min(i + CHUNK_SIZE, theaterIds.size());
+            List<TheaterId> chunk = theaterIds.subList(i, end);
 
-                for (TheaterId theaterId : chunk) {
-                    processTheaterDetail(theaterId, objectMapper);
-                }
+            for (TheaterId theaterId : chunk) {
+                processTheaterDetail(theaterId, objectMapper);
             }
-        } catch (Exception e) {
-            logger.error("Failed to fetch or process theater details", e);
-            throw new TheaterException(ErrorCode.INVALID_THEATER_DATA);
         }
     }
 
     private void processTheaterDetail(TheaterId theaterId, ObjectMapper objectMapper) {
         String mt10id = theaterId.getMt10id();
-        logger.info("Fetching details for Theater ID: " + mt10id);
+        System.out.println("Fetching details for Theater ID: " + mt10id);
 
         String url = "http://www.kopis.or.kr/openApi/restful/prfplc/" + mt10id;
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
@@ -75,7 +64,7 @@ public class TheaterDetailService {
         try {
             String response = restTemplate.getForObject(requestUrl, String.class);
             if (response == null || response.isEmpty()) {
-                logger.error("Empty or null response for Theater ID: " + mt10id);
+                System.err.println("Empty or null response for Theater ID: " + mt10id);
                 return;
             }
 
@@ -86,7 +75,7 @@ public class TheaterDetailService {
             JsonNode dbsNode = jsonNode.path("dbs");
             JsonNode dbNode = dbsNode.path("db");
             if (dbNode.isMissingNode() || dbNode.isEmpty()) {
-                logger.error("Missing or empty 'db' node for Theater ID: " + mt10id);
+                System.err.println("Missing or empty 'db' node for Theater ID: " + mt10id);
                 return;
             }
 
@@ -100,9 +89,9 @@ public class TheaterDetailService {
 
                 if (!existingTheater.equals(updatedTheater)) {
                     theaterDetailRepository.save(updatedTheater);
-                    logger.info("Updated Theater: " + updatedTheater);
+                    System.out.println("Updated Theater: " + updatedTheater);
                 } else {
-                    logger.info("No changes for Theater ID: " + mt10id);
+                    System.out.println("No changes for Theater ID: " + mt10id);
                 }
             } else {
                 TheaterDetail newTheater = TheaterDetail.builder()
@@ -122,11 +111,11 @@ public class TheaterDetailService {
                         .build();
 
                 TheaterDetail savedTheater = theaterDetailRepository.save(newTheater);
-                logger.info("Saved new Theater: " + savedTheater);
+                System.out.println("Saved new Theater: " + savedTheater);
             }
         } catch (Exception e) {
-            logger.error("Failed to fetch or process details for Theater ID: " + mt10id, e);
-            throw new TheaterException(ErrorCode.INVALID_THEATER_DATA);
+            System.err.println("Failed to fetch or process details for Theater ID: " + mt10id);
+            e.printStackTrace();
         }
     }
 
