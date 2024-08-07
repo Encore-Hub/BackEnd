@@ -1,6 +1,5 @@
     package com.team6.backend.favorite.theater.dto;
 
-    import com.fasterxml.jackson.annotation.JsonProperty;
     import lombok.Getter;
 
     @Getter

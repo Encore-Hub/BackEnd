@@ -11,7 +11,5 @@ public interface FavoriteTheaterRepository extends JpaRepository<FavoriteTheater
     // 수정된 메서드
     List<FavoriteTheater> findByMemberAndTheaterDetail(Member member, TheaterDetail theaterDetail);
 
-    List<FavoriteTheater> findByTheaterDetail(TheaterDetail theaterDetail);
-
     List<FavoriteTheater> findByMember(Member member);
 }
