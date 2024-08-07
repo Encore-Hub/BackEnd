@@ -56,4 +56,8 @@ public class TheaterDetail {
 
     @Column(name = "parkinglot")
     private String parkinglot;
+
+    public String getName() {
+        return fcltynm;
+    }
 }
