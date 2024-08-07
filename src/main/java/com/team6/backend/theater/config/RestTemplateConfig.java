@@ -1,4 +1,4 @@
-package com.team6.backend.tcommon.config;
+package com.team6.backend.theater.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
