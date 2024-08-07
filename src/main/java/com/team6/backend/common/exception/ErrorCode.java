@@ -37,7 +37,14 @@ public enum ErrorCode {
     // 추가된 오류 코드
     API_CALL_FAILURE(HttpStatus.INTERNAL_SERVER_ERROR, "API_001", "API 호출 실패."),
     JSON_PROCESSING_ERROR(HttpStatus.BAD_REQUEST, "API_002", "JSON 처리 오류 발생."),
-    DATABASE_SAVE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "DATABASE_001", "데이터베이스 저장 오류 발생.");
+    DATABASE_SAVE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "DATABASE_001", "데이터베이스 저장 오류 발생."),
+
+    // 추가: PFMC 및 MEMBER 관련 에러 코드
+    PFMC_NOT_FOUND(HttpStatus.NOT_FOUND, "PFMC_001", "찾을 수 없는 공연센터입니다."),
+    MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER_009", "찾을 수 없는 회원입니다."),
+
+    // 추가: 입력값 유효성 오류
+    INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "INPUT_001", "유효하지 않은 입력 값입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
