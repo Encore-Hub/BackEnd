@@ -13,9 +13,6 @@ public class FavoriteTheaterResponseDto {
 
     private boolean favoriteTheater;
 
-    // 기본 생성자
-    public FavoriteTheaterResponseDto() {
-    }
 
     // 생성자
     public FavoriteTheaterResponseDto(Long id, TheaterDetail theaterDetail, boolean favoriteTheater) {
