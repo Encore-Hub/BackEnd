@@ -68,24 +68,23 @@ public class FavoriteTheaterService {
 
     @Transactional(readOnly = true)
     public List<FavoriteTheaterResponseDto> getAllFavoriteTheatersByMemberId(Long memberId) {
-        log.debug("Fetching all favorite theaters for member with ID: {}", memberId);
+        log.debug("회원 ID {}에 대한 모든 즐겨 찾기 극장을 조회합니다.", memberId);
 
-        // Find Member
+        // 회원 찾기
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new EncoreHubException(ErrorCode.MEMBER_NOT_FOUND, "Member with ID " + memberId + " not found"));
-        log.debug("Member found: {}", member);
+                .orElseThrow(() -> new EncoreHubException(ErrorCode.MEMBER_NOT_FOUND, "ID " + memberId + "에 해당하는 회원을 찾을 수 없습니다."));
+        log.debug("회원을 찾았습니다: {}", member);
 
-        // Find FavoriteTheater
+        // 즐겨찾기 극장 찾기
         List<FavoriteTheater> favoriteTheaters = favoriteTheaterRepository.findByMember(member);
-        log.debug("Favorite theaters found: {}", favoriteTheaters);
+        log.debug("즐겨찾기 극장을 찾았습니다: {}", favoriteTheaters);
 
-        // Convert to FavoriteTheaterResponseDto list
-        List<FavoriteTheaterResponseDto> responseDtoList = favoriteTheaters.stream()
-                .map(ft -> new FavoriteTheaterResponseDto(ft.getId(),ft.getTheaterDetail() , ft.isFavoriteTheater()))
+        // FavoriteTheaterResponseDto 리스트로 변환하여 반환
+        return favoriteTheaters.stream()
+                .map(ft -> new FavoriteTheaterResponseDto(ft.getId(), ft.getTheaterDetail(), ft.isFavoriteTheater()))
                 .collect(Collectors.toList());
-
-        return responseDtoList;
     }
+
 
 
 
