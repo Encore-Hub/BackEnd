@@ -79,6 +79,7 @@ public class JwtUtil {
         return null;
     }
 
+
     public boolean validateAccessToken(HttpServletRequest request, HttpServletResponse response) {
         try {
             //헤더에는 JWT를 추출하고, 서명을 검증
@@ -98,7 +99,6 @@ public class JwtUtil {
             request.setAttribute("exception", ErrorCode.NOT_SUPPORTED_ACCESS_TOKEN.getCode());
             //일반적인 오류처리
         } catch (JwtException e) {
-
             e.printStackTrace();
             request.setAttribute("exception", ErrorCode.UNKNOWN_ACCESS_TOKEN_ERROR.getCode());
         }
