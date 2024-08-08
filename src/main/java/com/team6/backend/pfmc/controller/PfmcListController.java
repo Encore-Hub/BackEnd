@@ -16,8 +16,8 @@ public class PfmcListController {
     @Autowired
     private PfmcListRepository PfmcListRepository;
 
-    @GetMapping("/pfmc")
-    public List<PfmcList> getAllMusicals() {
+    @GetMapping("/pfmclist")
+    public List<PfmcList> getAllPfmclists() {
         return PfmcListRepository.findAll();
     }
 }
