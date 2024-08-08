@@ -20,7 +20,7 @@ public class RegionController {
         this.regionService = regionService;
     }
 
-    @GetMapping("/region")
+    @GetMapping("/api/region")
     public ResponseEntity<RegionResponseDto> getRegionGugunnm(
             @RequestParam String sidonm) {
         try {
