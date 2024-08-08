@@ -81,18 +81,24 @@ public class JwtUtil {
 
     public boolean validateAccessToken(HttpServletRequest request, HttpServletResponse response) {
         try {
+            //헤더에는 JWT를 추출하고, 서명을 검증
             Jwts.parserBuilder().setSigningKey(accessTokenKey).build().parseClaimsJws(request.getHeader(AUTHORIZATION_ACCESS).substring(7));
             return true;
+            //서명검증 실패시
         } catch (SecurityException | MalformedJwtException | SignatureException e) {
             e.printStackTrace();
             request.setAttribute("exception", ErrorCode.INVALID_ACCESS_TOKEN.getCode());
+            //jwt 만료
         } catch (ExpiredJwtException e) {
             e.printStackTrace();
             request.setAttribute("exception", ErrorCode.EXPIRATION_ACCESS_TOKEN.getCode());
+            // 지원되지않는 형식
         } catch (UnsupportedJwtException e) {
             e.printStackTrace();
             request.setAttribute("exception", ErrorCode.NOT_SUPPORTED_ACCESS_TOKEN.getCode());
+            //일반적인 오류처리
         } catch (JwtException e) {
+
             e.printStackTrace();
             request.setAttribute("exception", ErrorCode.UNKNOWN_ACCESS_TOKEN_ERROR.getCode());
         }

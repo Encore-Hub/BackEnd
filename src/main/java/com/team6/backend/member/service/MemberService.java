@@ -50,12 +50,10 @@ public class MemberService {
         if (isExistEmail) {
             issueTokens(member, response);
         }
-
         return new MemberLoginResponseDto(isExistEmail);
 
 
     }
-
     // 토큰 발행
     public void issueTokens(Member member, HttpServletResponse response) {
         String accessToken = jwtUtil.createAccessToken(member.getEmail(), member.getRole());
