@@ -39,6 +39,7 @@ public class Pfmc {
     private String daehakro;
     private String entrpsnmS;
     @Id
+    @Column(name = "mt20id")
     private String mt20id;
     private String entrpsnmP;
     private String visit;
@@ -48,7 +49,7 @@ public class Pfmc {
     private String child;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "pfmc_id")
+    @JoinColumn(name = "mt20id")
     private List<RelateInfo> relateInfos = new ArrayList<>();
 
     @ElementCollection
