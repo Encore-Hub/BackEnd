@@ -81,10 +81,12 @@ public class FavoriteTheaterService {
 
         // Convert to FavoriteTheaterResponseDto list
         List<FavoriteTheaterResponseDto> responseDtoList = favoriteTheaters.stream()
-                .map(ft -> new FavoriteTheaterResponseDto(ft.getId(), ft.getTheaterDetail().getName(), ft.isFavoriteTheater()))
+                .map(ft -> new FavoriteTheaterResponseDto(ft.getId(),ft.getTheaterDetail() , ft.isFavoriteTheater()))
                 .collect(Collectors.toList());
 
         return responseDtoList;
     }
+
+
 
 }

@@ -1,5 +1,6 @@
 package com.team6.backend.favorite.theater.dto;
 
+import com.team6.backend.theater.theater.entity.TheaterDetail;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,9 +18,9 @@ public class FavoriteTheaterResponseDto {
     }
 
     // 생성자
-    public FavoriteTheaterResponseDto(Long id, String theaterName, boolean favoriteTheater) {
+    public FavoriteTheaterResponseDto(Long id, TheaterDetail theaterDetail, boolean favoriteTheater) {
         this.id = id;
-        this.theaterName = theaterName;
+        this.theaterName = theaterDetail.getFcltynm();
         this.favoriteTheater = favoriteTheater;
     }
 }

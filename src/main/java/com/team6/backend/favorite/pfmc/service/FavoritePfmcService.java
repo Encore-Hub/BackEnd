@@ -76,9 +76,10 @@ public class FavoritePfmcService {
         List<FavoritePfmc> favoritePfmcList = favoritePfmcRepository.findByMember(member);
 
         return favoritePfmcList.stream()
-                .map(fp -> new FavoritePfmcResponseDto(fp.getId(), fp.getPfmc().getPfmcName(),fp.getPfmc().getPfmcPoser(),fp.getPfmc().getpfmcTheaterName(), fp.isFavoritePfmc()))
+                .map(fp -> new FavoritePfmcResponseDto(fp.getId(), fp.getPfmc()))
                 .collect(Collectors.toList());
     }
+
 
 
 }

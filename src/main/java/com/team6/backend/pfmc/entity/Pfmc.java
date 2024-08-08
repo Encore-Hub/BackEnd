@@ -62,15 +62,5 @@ public class Pfmc {
         styurls.add(styurl);
     }
 
-    public String getPfmcName() {
-        return prfnm;
-    }
 
-    public String getPfmcPoser() {
-        return poster;
-    }
-
-    public String getpfmcTheaterName() {
-        return fcltynm;
-    }
 }
