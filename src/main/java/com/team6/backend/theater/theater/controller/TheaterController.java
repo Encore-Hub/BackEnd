@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/theaters")
+@RequestMapping("/api/theaters")
 public class TheaterController {
     private final TheaterService theaterService;
 
