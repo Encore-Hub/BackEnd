@@ -6,6 +6,7 @@ import lombok.Getter;
 
 @Getter
 public class MemberSignupRequestDto {
+    // 조건 걸어야한다.
     private String email;
     private String password;
     private String confirmPassword;
