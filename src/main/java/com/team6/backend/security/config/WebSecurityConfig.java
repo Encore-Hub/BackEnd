@@ -59,7 +59,8 @@ public class WebSecurityConfig {
                         authorizeHttpRequests
                                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                                 .requestMatchers("/swagger", "/swagger-ui.html", "/swagger-ui/**", "/api-docs", "/api-docs/**", "/v3/api-docs/**").permitAll()
-                                .requestMatchers("/api/member/**").permitAll()
+                                .requestMatchers("/api/theater/**").permitAll()  // Exclude /api/theater/** from security
+                                .requestMatchers("/api/region/**").permitAll()   // Exclude /api/region/** from security
                                 .anyRequest().authenticated()
                 )
         ;
