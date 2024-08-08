@@ -39,7 +39,7 @@ public class Pfmc {
     private String daehakro;
     private String entrpsnmS;
     @Id
-    @Column(name = "mt20id")
+    @Column(name = "pfmc_id")
     private String mt20id;
     private String entrpsnmP;
     private String visit;
@@ -48,8 +48,8 @@ public class Pfmc {
     private String poster;
     private String child;
 
-
-    @OneToMany(mappedBy = "pfmc", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "pfmc_id")
     private List<RelateInfo> relateInfos = new ArrayList<>();
 
     @ElementCollection
