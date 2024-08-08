@@ -5,9 +5,9 @@ import lombok.Getter;
 @Getter
 public class FavoritePfmcResponseDto {
 
-    private Long id;
-    private String pfmcName; // PFMC의 이름
-    private String prmcPoster;
+    private final Long id;
+    private final String pfmcName; // PFMC의 이름
+    private final String prmcPoster;
     private boolean favoritePfmc;
 
     public FavoritePfmcResponseDto(Long id, Pfmc pfmc) {
