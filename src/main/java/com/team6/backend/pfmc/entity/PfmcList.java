@@ -16,7 +16,7 @@ import lombok.*;
 public class PfmcList {
 
     @Id
-    @Column(name = "pfmc_id")
+    @Column(name = "mt20id")
     private String mt20id; // 공연id
     @Column(name = "pfmcname")
     private String prfnm;   // 공연명
