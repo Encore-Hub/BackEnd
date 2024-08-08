@@ -70,15 +70,19 @@ public class FavoritePfmcService {
     public List<FavoritePfmcResponseDto> getFavoritePfmcListByMemberId(Long memberId) {
         log.debug("회원 ID {}에 대한 즐겨 찾기한 PFMC 목록을 조회합니다.", memberId);
 
+        // 회원 ID로 회원을 찾습니다.
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new EncoreHubException(ErrorCode.MEMBER_NOT_FOUND, "회원 ID에 해당하는 회원을 찾을 수 없습니다: " + memberId));
 
+        // 회원이 즐겨 찾기한 PFMC 목록을 찾습니다.
         List<FavoritePfmc> favoritePfmcList = favoritePfmcRepository.findByMember(member);
 
+        // FavoritePfmc 객체를 FavoritePfmcResponseDto 객체로 변환하여 리스트로 반환합니다.
         return favoritePfmcList.stream()
-                .map(fp -> new FavoritePfmcResponseDto(fp.getId(), fp.getPfmc()))
+                .map(fp -> new FavoritePfmcResponseDto(fp.getId(), fp.getPfmc(), fp.isFavoritePfmc()))
                 .collect(Collectors.toList());
     }
+
 
 
 

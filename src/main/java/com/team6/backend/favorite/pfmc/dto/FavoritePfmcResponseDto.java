@@ -10,7 +10,7 @@ public class FavoritePfmcResponseDto {
     private final String prmcPoster;
     private boolean favoritePfmc;
 
-    public FavoritePfmcResponseDto(Long id, Pfmc pfmc) {
+    public FavoritePfmcResponseDto(Long id, Pfmc pfmc, boolean favoritePfmc) {
         this.id = id;
         this.pfmcName = pfmc.getPrfnm();
         this.prmcPoster = pfmc.getPoster();
