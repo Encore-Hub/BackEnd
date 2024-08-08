@@ -46,7 +46,13 @@ public class MemberService {
         );
         memberValidator.validateMatchPassword(requestDto.getPassword(), member.getPassword());
         boolean isExistEmail = memberValidator.validateExistEmail(member);
+        // 로그인 성공 시 토큰 발급
+        if (isExistEmail) {
+            issueTokens(member, response);
+        }
+
         return new MemberLoginResponseDto(isExistEmail);
+
 
     }
 
