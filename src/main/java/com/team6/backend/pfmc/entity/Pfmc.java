@@ -48,8 +48,8 @@ public class Pfmc {
     private String poster;
     private String child;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "mt20id")
+
+    @OneToMany(mappedBy = "pfmc", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RelateInfo> relateInfos = new ArrayList<>();
 
     @ElementCollection
