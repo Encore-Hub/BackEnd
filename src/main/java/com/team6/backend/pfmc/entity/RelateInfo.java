@@ -22,4 +22,5 @@ public class RelateInfo {
         this.relatenm = relatenm;
         this.relateurl = relateurl;
     }
+
 }
