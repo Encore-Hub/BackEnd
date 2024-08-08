@@ -1,7 +1,6 @@
 package com.team6.backend.pfmc.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.team6.backend.theater.theater.entity.TheaterDetail;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -40,6 +39,7 @@ public class Pfmc {
     private String daehakro;
     private String entrpsnmS;
     @Id
+    @Column(name = "pfmc_id")
     private String mt20id;
     private String entrpsnmP;
     private String visit;
@@ -49,7 +49,7 @@ public class Pfmc {
     private String child;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "pfmc_id")
+    @JoinColumn(name = "pfmcid")
     private List<RelateInfo> relateInfos = new ArrayList<>();
 
     @ElementCollection
@@ -63,10 +63,5 @@ public class Pfmc {
         styurls.add(styurl);
     }
 
-
-    // TheaterDetail과의 일대일 양방향 관계 설정
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "theater_detail_id")  // 외래 키 지정
-    private TheaterDetail theaterDetail;
 
 }
