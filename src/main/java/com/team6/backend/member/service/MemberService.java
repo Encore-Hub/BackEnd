@@ -46,6 +46,9 @@ public class MemberService {
         );
         memberValidator.validateMatchPassword(requestDto.getPassword(), member.getPassword());
         boolean isExistEmail = memberValidator.validateExistEmail(member);
+        if (isExistEmail) {
+            issueTokens(member, response);
+        }
         return new MemberLoginResponseDto(isExistEmail);
 
     }
