@@ -1,7 +1,6 @@
 package com.team6.backend.pfmc.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.team6.backend.pfmc.entity.RelateInfo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -49,7 +48,7 @@ public class Pfmc {
     private String child;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "pfmc_id")
+    @JoinColumn(name = "pfmcid")
     private List<RelateInfo> relateInfos = new ArrayList<>();
 
     @ElementCollection
