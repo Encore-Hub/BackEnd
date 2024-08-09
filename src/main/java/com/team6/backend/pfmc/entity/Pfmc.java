@@ -39,7 +39,7 @@ public class Pfmc {
     private String daehakro;
     private String entrpsnmS;
     @Id
-    @JoinColumn(name = "pfmc_id")
+    @Column(name = "pfmc_id")
     private String mt20id;
     private String entrpsnmP;
     private String visit;
