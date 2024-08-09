@@ -2,7 +2,6 @@ package com.team6.backend.theater.theater.controller;
 
 
 import com.team6.backend.common.exception.TheaterException;
-import com.team6.backend.theater.api.dto.TheaterDetailResponseDto;
 import com.team6.backend.theater.theater.dto.*;
 import com.team6.backend.theater.theater.service.TheaterService;
 import org.springframework.http.HttpStatus;

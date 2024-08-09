@@ -4,7 +4,6 @@ import com.team6.backend.common.exception.ErrorCode;
 import com.team6.backend.common.exception.TheaterException;
 import com.team6.backend.pfmc.entity.Pfmc;
 import com.team6.backend.pfmc.repository.PfmcRepository;
-import com.team6.backend.theater.api.dto.TheaterDetailResponseDto;
 import com.team6.backend.theater.api.dto.TheaterDto;
 import com.team6.backend.theater.theater.dto.*;
 import com.team6.backend.theater.theater.entity.TheaterDetail;
@@ -14,7 +13,6 @@ import com.team6.backend.theater.theater.repository.TheaterIdRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
