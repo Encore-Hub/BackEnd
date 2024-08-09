@@ -2,12 +2,11 @@ package com.team6.backend.theater.theater.service;
 
 import com.team6.backend.common.exception.ErrorCode;
 import com.team6.backend.common.exception.TheaterException;
+import com.team6.backend.pfmc.entity.Pfmc;
+import com.team6.backend.pfmc.repository.PfmcRepository;
 import com.team6.backend.theater.api.dto.TheaterDetailResponseDto;
 import com.team6.backend.theater.api.dto.TheaterDto;
-import com.team6.backend.theater.theater.dto.RegionTheaterRequestDto;
-import com.team6.backend.theater.theater.dto.RegionTheaterResponseDto;
-import com.team6.backend.theater.theater.dto.SearchTheaterRequestDto;
-import com.team6.backend.theater.theater.dto.SearchTheaterResponseDto;
+import com.team6.backend.theater.theater.dto.*;
 import com.team6.backend.theater.theater.entity.TheaterDetail;
 import com.team6.backend.theater.theater.entity.TheaterId;
 import com.team6.backend.theater.theater.repository.TheaterDetailRepository;
@@ -22,10 +21,12 @@ import java.util.stream.Collectors;
 public class TheaterService {
     private final TheaterDetailRepository theaterDetailRepository;
     private final TheaterIdRepository theaterIdRepository;
+    private PfmcRepository pfmcRepository;
 
-    public TheaterService(TheaterDetailRepository theaterDetailRepository, TheaterIdRepository theaterIdRepository) {
+    public TheaterService(TheaterDetailRepository theaterDetailRepository, TheaterIdRepository theaterIdRepository, PfmcRepository pfmcRepository) {
         this.theaterDetailRepository = theaterDetailRepository;
         this.theaterIdRepository = theaterIdRepository;
+        this.pfmcRepository = pfmcRepository;
     }
 
     // 지역별 공연장 리스트 조회
@@ -70,25 +71,15 @@ public class TheaterService {
                 .build();
     }
 
-    // 공연시설 아이디로 상세 조회
-    public TheaterDetailResponseDto getTheaterDetail(String mt10id) {
+    public TheaterDetailPfmcResponseDto getTheaterDetailWithPerformances(String mt10id) {
+        // Retrieve TheaterDetail
         TheaterDetail theaterDetail = theaterDetailRepository.findByMt10id(mt10id)
                 .orElseThrow(() -> new TheaterException(ErrorCode.THEATER_DETAIL_NOT_FOUND));
 
-        return new TheaterDetailResponseDto(
-                theaterDetail.getMt10id(),
-                theaterDetail.getFcltychartr(),
-                theaterDetail.getSidonm(),
-                theaterDetail.getGugunnm(),
-                theaterDetail.getFcltynm(),
-                theaterDetail.getSeatscale(),
-                theaterDetail.getMt13cnt(),
-                theaterDetail.getTelno(),
-                theaterDetail.getRelateurl(),
-                theaterDetail.getAdres(),
-                theaterDetail.getLa(),
-                theaterDetail.getLo(),
-                theaterDetail.getParkinglot()
-        );
+        // Retrieve performances associated with mt10id
+        List<Pfmc> performances = pfmcRepository.findByMt10id(mt10id);
+
+        // Create TheaterDetailPfmcResponseDto with both TheaterDetail and performances
+        return new TheaterDetailPfmcResponseDto(theaterDetail, performances);
     }
 }
