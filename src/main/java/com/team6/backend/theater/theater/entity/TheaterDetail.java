@@ -1,9 +1,7 @@
     package com.team6.backend.theater.theater.entity;
 
-    import jakarta.persistence.Column;
-    import jakarta.persistence.Entity;
-    import jakarta.persistence.Id;
-    import jakarta.persistence.Table;
+    import com.team6.backend.pfmc.entity.Pfmc;
+    import jakarta.persistence.*;
     import lombok.AllArgsConstructor;
     import lombok.Builder;
     import lombok.Getter;
@@ -56,5 +54,11 @@
 
         @Column(name = "parkinglot")
         private String parkinglot;
+
+        @ManyToOne
+        @JoinColumn(name = "pfmc_mt20id", referencedColumnName = "mt20id")
+        private Pfmc pfmc;
+
+
 
     }

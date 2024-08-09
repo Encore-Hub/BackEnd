@@ -1,11 +1,8 @@
 package com.team6.backend.theater.theater.controller;
 
 
-import com.team6.backend.theater.api.dto.TheaterDetailResponseDto;
-import com.team6.backend.theater.theater.dto.RegionTheaterRequestDto;
-import com.team6.backend.theater.theater.dto.RegionTheaterResponseDto;
-import com.team6.backend.theater.theater.dto.SearchTheaterRequestDto;
-import com.team6.backend.theater.theater.dto.SearchTheaterResponseDto;
+import com.team6.backend.common.exception.TheaterException;
+import com.team6.backend.theater.theater.dto.*;
 import com.team6.backend.theater.theater.service.TheaterService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/theaters")
+    @RequestMapping("/api/theaters")
 public class TheaterController {
     private final TheaterService theaterService;
 
@@ -50,15 +47,19 @@ public class TheaterController {
     }
 
     @GetMapping("/{mt10id}")
-    public ResponseEntity<TheaterDetailResponseDto> getTheaterDetail(@PathVariable String mt10id) {
+    public ResponseEntity<TheaterDetailPfmcResponseDto> getTheaterDetail(@PathVariable String mt10id) {
         try {
-            TheaterDetailResponseDto responseDto = theaterService.getTheaterDetail(mt10id);
-            if (responseDto != null) {
-                return ResponseEntity.ok(responseDto);
-            } else {
-                return ResponseEntity.notFound().build();
-            }
+            // Get TheaterDetail and performances
+            TheaterDetailPfmcResponseDto responseDto = theaterService.getTheaterDetailWithPerformances(mt10id);
+
+            // Return responseDto in response body
+            return ResponseEntity.ok(responseDto);
+
+        } catch (TheaterException e) {
+            // Handle custom exception and return appropriate status code
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
+            // Log the exception if needed
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

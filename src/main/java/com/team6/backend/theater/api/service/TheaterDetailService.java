@@ -2,6 +2,8 @@ package com.team6.backend.theater.api.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.team6.backend.pfmc.entity.Pfmc;
+import com.team6.backend.pfmc.repository.PfmcRepository;
 import com.team6.backend.theater.api.dto.TheaterDetailDto;
 import com.team6.backend.theater.theater.entity.TheaterDetail;
 import com.team6.backend.theater.theater.entity.TheaterId;
@@ -26,6 +28,9 @@ public class TheaterDetailService {
 
     @Autowired
     private TheaterIdRepository theaterIdRepository;
+
+    @Autowired
+    private PfmcRepository pfmcRepository;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -80,6 +85,10 @@ public class TheaterDetailService {
             }
 
             TheaterDetailDto theaterDetailDto = objectMapper.treeToValue(dbNode, TheaterDetailDto.class);
+
+            // Pfmc 객체를 조회합니다.
+            String pfmcId = theaterDetailDto.getRelateurl(); // Assume relateurl contains pfmc_id
+            Pfmc pfmc = pfmcRepository.findById(pfmcId).orElse(null);
 
             Optional<TheaterDetail> existingTheaterOpt = theaterDetailRepository.findById(mt10id);
 
