@@ -2,11 +2,10 @@ package com.team6.backend.boxOffice.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.team6.backend.boxOffice.dto.BoxOfficeDto;
 import com.team6.backend.boxOffice.entity.BoxOffice;
 import com.team6.backend.boxOffice.repository.BoxOfficeRepository;
-import org.json.JSONObject;
-import org.json.XML;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,20 +73,14 @@ public class BoxOfficeApiService {
 
             logger.debug("Raw API Response: {}", response);
 
-            // XML을 JSON으로 변환
-            JSONObject jsonObject = XML.toJSONObject(response);
-            String jsonString = jsonObject.toString();
-
-            logger.debug("Converted JSON: {}", jsonString);
-
-            // JSON 파싱
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode rootNode = objectMapper.readTree(jsonString);
+            // XML을 JSON으로 변환 using Jackson XmlMapper
+            XmlMapper xmlMapper = new XmlMapper();
+            JsonNode rootNode = xmlMapper.readTree(response.getBytes());
 
             // 'boxofs'와 'boxof' 노드를 확인
             JsonNode boxofNode = rootNode.path("boxofs").path("boxof");
 
-            if (boxofNode.isMissingNode() || !boxofNode.isArray() || boxofNode.size() == 0) {
+            if (boxofNode.isMissingNode() || !boxofNode.isArray() || boxofNode.isEmpty()) {
                 logger.info("응답에서 박스오피스 정보가 없습니다.");
                 return;
             }

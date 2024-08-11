@@ -1,7 +1,6 @@
 package com.team6.backend.boxOffice.controller;
 
 import com.team6.backend.boxOffice.dto.BoxOfficeDto;
-import com.team6.backend.boxOffice.entity.BoxOffice;
 import com.team6.backend.boxOffice.service.BoxOfficeApiService;
 import com.team6.backend.boxOffice.service.BoxOfficeService;
 import org.slf4j.Logger;
