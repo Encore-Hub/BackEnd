@@ -1,4 +1,4 @@
-package com.team6.backend.Oauth2.kakao.Entity;
+package com.team6.backend.Oauth2.kakao.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;

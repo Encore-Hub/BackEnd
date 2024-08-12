@@ -1,4 +1,4 @@
-package com.team6.backend.Oauth2.kakao.Entity;
+package com.team6.backend.Oauth2.kakao.entity;
 
 import com.team6.backend.member.entity.MemberRoleEnum;
 import jakarta.persistence.*;
