@@ -78,7 +78,7 @@ public class BoxOfficeApiService {
             JsonNode rootNode = xmlMapper.readTree(response.getBytes());
 
             // 'boxofs'와 'boxof' 노드를 확인
-            JsonNode boxofNode = rootNode.path("boxofs").path("boxof");
+            JsonNode boxofNode = rootNode.path("boxof");
 
             if (boxofNode.isMissingNode() || !boxofNode.isArray() || boxofNode.isEmpty()) {
                 logger.info("응답에서 박스오피스 정보가 없습니다.");

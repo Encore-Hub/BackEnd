@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class LikeRequestDto {
     private String mt20id;
-    private Long memberId;
+    private String email;
 }

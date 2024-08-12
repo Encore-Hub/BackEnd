@@ -3,7 +3,6 @@ package com.team6.backend.member.controller;
 import com.team6.backend.common.response.ResponseMessage;
 import com.team6.backend.member.dto.request.MemberLoginRequestDto;
 import com.team6.backend.member.dto.request.MemberSignupRequestDto;
-import com.team6.backend.member.dto.response.MemberLoginResponseDto;
 import com.team6.backend.member.service.MemberService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -27,10 +26,4 @@ public class MemberController {
         return new ResponseEntity<>(new ResponseMessage<>("회원가입 성공", null), HttpStatus.CREATED);
     }
 
-    // 로그인
-    @PostMapping("/member/login")
-    public ResponseEntity<ResponseMessage<MemberLoginResponseDto>> login(@RequestBody MemberLoginRequestDto requestDto, HttpServletResponse response) {
-        MemberLoginResponseDto memberLoginResponseDto = memberService.login(requestDto, response);
-        return new ResponseEntity<>(new ResponseMessage<>("로그인 성공", memberLoginResponseDto), HttpStatus.OK);
-    }
 }

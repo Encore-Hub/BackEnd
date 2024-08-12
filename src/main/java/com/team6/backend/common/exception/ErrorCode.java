@@ -16,6 +16,10 @@ public enum ErrorCode {
     NOT_VALID_PASSWORD(HttpStatus.BAD_REQUEST, "MEMBER_006", "비밀번호를 다시 확인해주세요."),
     NOT_FOUND_MEMBER(HttpStatus.NOT_FOUND, "MEMBER_007", "찾을 수 없는 회원입니다."),
     MISMATCH_REFRESH_TOKEN(HttpStatus.NOT_ACCEPTABLE, "MEMBER_008", "Refresh token mismatch."),
+    MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER_009", "찾을 수 없는 회원입니다."),
+    FAILED_LOGIN(HttpStatus.UNAUTHORIZED, "MEMBER_010", "로그인에 실패하였습니다."),
+    FORBIDDEN_TO_ACCESS(HttpStatus.FORBIDDEN, "MEMBER_011", "접근할 권한이 없습니다."),
+    UNAUTHORIZED_TO_ACCESS(HttpStatus.UNAUTHORIZED, "MEMBER_012", "로그인 바랍니다."),
 
     // Access Token 관련 오류 코드
     NOT_FOUND_ACCESS_TOKEN(HttpStatus.NOT_FOUND, "ACCESS_TOKEN_001", "Access token not found."),
@@ -23,6 +27,11 @@ public enum ErrorCode {
     EXPIRATION_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "ACCESS_TOKEN_003", "Access token has expired."),
     NOT_SUPPORTED_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "ACCESS_TOKEN_004", "Access token is not supported."),
     UNKNOWN_ACCESS_TOKEN_ERROR(HttpStatus.UNAUTHORIZED, "ACCESS_TOKEN_005", "Access token error."),
+
+    // Refresh Token 관련 오류 코드
+    INVALID_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "REFRESH_TOKEN_001", "Refresh Token is invalid."),
+    EXPIRATION_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "REFRESH_TOKEN_002", "Refresh Token has expired."),
+    NOT_FOUND_REFRESH_TOKEN(HttpStatus.NOT_FOUND, "REFRESH_TOKEN_003", "Refresh Token not found."),
 
     // 공연장 관련 오류 코드
     THEATER_NOT_FOUND(HttpStatus.NOT_FOUND, "THEATER_001", "찾을 수 없는 공연장입니다."),
@@ -39,9 +48,8 @@ public enum ErrorCode {
     JSON_PROCESSING_ERROR(HttpStatus.BAD_REQUEST, "API_002", "JSON 처리 오류 발생."),
     DATABASE_SAVE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "DATABASE_001", "데이터베이스 저장 오류 발생."),
 
-    // 추가: PFMC 및 MEMBER 관련 에러 코드
+    // PFMC 관련 에러 코드
     PFMC_NOT_FOUND(HttpStatus.NOT_FOUND, "PFMC_001", "찾을 수 없는 공연센터입니다."),
-    MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER_009", "찾을 수 없는 회원입니다."),
 
     // 추가: 입력값 유효성 오류
     INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "INPUT_001", "유효하지 않은 입력 값입니다.");
