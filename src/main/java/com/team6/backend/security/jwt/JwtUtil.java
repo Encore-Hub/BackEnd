@@ -150,5 +150,15 @@ public class JwtUtil {
     public Claims getUserInfoFormToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
+    /**
+     * JWT에서 이메일 추출
+     *
+     * @param token JWT 토큰
+     * @return 이메일
+     */
+    public String getEmailFromToken(String token) {
+        Claims claims = getUserInfoFormToken(token);
+        return claims.getSubject(); // setSubject로 설정된 이메일을 추출
+    }
 
 }
