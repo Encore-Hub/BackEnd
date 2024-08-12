@@ -24,7 +24,7 @@ public class Like {
     @JoinColumn(name = "pfmc_id", nullable = false)
     private Pfmc pfmc;
 
-    private boolean liked;
+    private boolean liked = false;
 
     public Like(Member member, Pfmc pfmc, boolean liked) {
         this.member = member;

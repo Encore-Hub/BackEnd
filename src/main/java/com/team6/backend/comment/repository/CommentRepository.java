@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-    // 회원이 작성한 댓글을 조회하는 메서드
+    // 이메일로 회원을 찾고 그 회원이 작성한 댓글을 조회하는 메서드
     List<Comment> findByMember(Member member);
     // 특정 공연에 대한 모든 댓글을 조회하는 메서드
     List<Comment> findByPfmc(Pfmc pfmc);
