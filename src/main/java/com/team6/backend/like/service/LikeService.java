@@ -1,6 +1,7 @@
 package com.team6.backend.like.service;
 
 import com.team6.backend.common.exception.ResourceNotFoundException;
+import com.team6.backend.like.dto.LikedPfmcResponseDto;
 import com.team6.backend.like.entity.Like;
 import com.team6.backend.like.repository.LikeRepository;
 import com.team6.backend.member.entity.Member;
@@ -14,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @Service
 @RequiredArgsConstructor
 public class LikeService {
@@ -25,11 +25,11 @@ public class LikeService {
 
     // 좋아요 추가 또는 취소
     @Transactional
-    public void toggleLike(String mt20id, Long memberId) {
+    public void toggleLike(String mt20id, String email) {
         Pfmc pfmc = pfmcRepository.findById(mt20id)
                 .orElseThrow(() -> new ResourceNotFoundException("Performance not found"));
 
-        Member member = memberRepository.findById(memberId)
+        Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         Like like = likeRepository.findByMemberAndPfmc(member, pfmc)
@@ -47,24 +47,23 @@ public class LikeService {
         return likeRepository.countByPfmcAndLiked(pfmc, true);
     }
 
-    public List<Pfmc> getLikedPerformancesByMember(Long memberId) {
-        Member member = memberRepository.findById(memberId)
+    public List<LikedPfmcResponseDto> getLikedPerformancesByMember(String email) {
+        Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         // 사용자가 좋아요 누른 공연만 필터링하여 리스트 반환
         return likeRepository.findByMember(member).stream()
                 .filter(Like::isLiked)
-                .map(Like::getPfmc)
+                .map(like -> new LikedPfmcResponseDto(like.getPfmc(), like.isLiked())) // Pfmc와 liked 상태를 함께 반환
                 .collect(Collectors.toList());
     }
 
-
     // 특정 공연에 사용자가 좋아요를 눌렀는지 확인
-    public boolean isLiked(String mt20id, Long memberId) {
+    public boolean isLiked(String mt20id, String email) {
         Pfmc pfmc = pfmcRepository.findById(mt20id)
                 .orElseThrow(() -> new ResourceNotFoundException("Performance not found"));
 
-        Member member = memberRepository.findById(memberId)
+        Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         return likeRepository.findByMemberAndPfmc(member, pfmc)

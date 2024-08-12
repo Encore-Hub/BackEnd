@@ -27,11 +27,11 @@ public class CommentService {
 
     // 댓글 추가
     @Transactional
-    public CommentResponseDto addComment(CommentRequestDto requestDto) {
+    public CommentResponseDto addComment(CommentRequestDto requestDto, String email) {
         Pfmc performance = pfmcRepository.findById(requestDto.getMt20id())
                 .orElseThrow(() -> new ResourceNotFoundException("Performance not found"));
 
-        Member member = memberRepository.findById(requestDto.getMemberId())
+        Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         Comment parentComment = null;
@@ -44,20 +44,18 @@ public class CommentService {
         Comment savedComment = commentRepository.save(comment);
 
         return new CommentResponseDto(savedComment.getId(), savedComment.getContent(),
-                savedComment.getMember().getId(), savedComment.getPfmc().getMt20id(),
+                savedComment.getMember().getEmail(), savedComment.getPfmc().getMt20id(),
                 savedComment.getCreatedAt(), savedComment.getUpdatedAt(),
                 savedComment.getParentComment() != null ? savedComment.getParentComment().getId() : null);
     }
 
-
-
     // 댓글 수정
     @Transactional
-    public CommentResponseDto updateComment(Long commentId, Long memberId, String newContent) {
+    public CommentResponseDto updateComment(Long commentId, String memberEmail, String newContent) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Comment not found"));
 
-        if (!comment.getMember().getId().equals(memberId)) {
+        if (!comment.getMember().getEmail().equals(memberEmail)) {
             throw new UnauthorizedException("You are not allowed to edit this comment");
         }
 
@@ -65,19 +63,18 @@ public class CommentService {
         Comment updatedComment = commentRepository.save(comment);
 
         return new CommentResponseDto(updatedComment.getId(), updatedComment.getContent(),
-                updatedComment.getMember().getId(), updatedComment.getPfmc().getMt20id(),
+                updatedComment.getMember().getEmail(), updatedComment.getPfmc().getMt20id(),
                 updatedComment.getCreatedAt(), updatedComment.getUpdatedAt(),
                 updatedComment.getParentComment() != null ? updatedComment.getParentComment().getId() : null);
     }
 
-
     // 댓글 삭제
     @Transactional
-    public void deleteComment(Long commentId, Long memberId) {
+    public void deleteComment(Long commentId, String memberEmail) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Comment not found"));
 
-        if (!comment.getMember().getId().equals(memberId)) {
+        if (!comment.getMember().getEmail().equals(memberEmail)) {
             throw new UnauthorizedException("You are not allowed to delete this comment");
         }
 
@@ -92,35 +89,54 @@ public class CommentService {
         List<Comment> comments = commentRepository.findByPfmc(pfmc);
         return comments.stream()
                 .map(comment -> new CommentResponseDto(comment.getId(), comment.getContent(),
-                        comment.getMember().getId(), comment.getPfmc().getMt20id(),
+                        comment.getMember().getEmail(), comment.getPfmc().getMt20id(),
                         comment.getCreatedAt(), comment.getUpdatedAt(),
                         comment.getParentComment() != null ? comment.getParentComment().getId() : null))
                 .collect(Collectors.toList());
     }
 
-
     // 특정 회원이 작성한 댓글을 기반으로 공연 목록 조회
-    public List<Pfmc> getPerformancesByMemberComments(Long memberId) {
-        // 회원 ID를 사용하여 회원 객체를 조회
-        Member member = memberRepository.findById(memberId)
+    public List<Pfmc> getPerformancesByMemberComments(String memberEmail) {
+        Member member = memberRepository.findByEmail(memberEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        // 해당 회원이 작성한 모든 댓글을 조회
         List<Comment> comments = commentRepository.findByMember(member);
 
-        // 각 댓글에 연결된 공연(Pfmc) 객체 추출
         return comments.stream()
-                .map(Comment::getPfmc) // 각 댓글에서 공연 객체를 추출
-                .distinct() // 중복된 공연 제거
+                .map(Comment::getPfmc)
+                .distinct()
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public List<Comment> getParentCommentsByPerformanceOrderedByLikes(String Mt20id) {
-        Pfmc performance = pfmcRepository.findById(Mt20id)
+    public List<Comment> getParentCommentsByPerformanceOrderedByLikes(String mt20id) {
+        Pfmc performance = pfmcRepository.findById(mt20id)
                 .orElseThrow(() -> new ResourceNotFoundException("Performance not found"));
 
-        // 공연에 대한 부모 댓글을 좋아요 많은 순서로 조회
         return commentRepository.findParentCommentsByPerformanceOrderedByLikes(performance);
+    }
+
+    // 관리자용 댓글 수정
+    @Transactional
+    public CommentResponseDto updateCommentAsAdmin(Long commentId, String newContent) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Comment not found"));
+
+        comment.updateContent(newContent);
+        Comment updatedComment = commentRepository.save(comment);
+
+        return new CommentResponseDto(updatedComment.getId(), updatedComment.getContent(),
+                updatedComment.getMember().getEmail(), updatedComment.getPfmc().getMt20id(),
+                updatedComment.getCreatedAt(), updatedComment.getUpdatedAt(),
+                updatedComment.getParentComment() != null ? updatedComment.getParentComment().getId() : null);
+    }
+
+    // 관리자용 댓글 삭제
+    @Transactional
+    public void deleteCommentAsAdmin(Long commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Comment not found"));
+
+        commentRepository.delete(comment);
     }
 }
