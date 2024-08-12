@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/theater")
+@RequestMapping("/api/openapi/theaters")
 public class TheaterApiController {
 
     private static final Logger logger = LoggerFactory.getLogger(TheaterApiController.class);
