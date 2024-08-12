@@ -5,9 +5,11 @@ import com.team6.backend.comment.dto.CommentResponseDto;
 import com.team6.backend.comment.entity.Comment;
 import com.team6.backend.comment.service.CommentService;
 import com.team6.backend.common.response.ResponseMessage;
+import com.team6.backend.member.entity.MemberRoleEnum;
 import com.team6.backend.pfmc.entity.Pfmc;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -62,5 +64,22 @@ public class CommentController {
     public ResponseEntity<ResponseMessage<List<Comment>>> getTopParentCommentsByPerformance(@PathVariable String mt20id) {
         List<Comment> comments = commentService.getParentCommentsByPerformanceOrderedByLikes(mt20id);
         return ResponseEntity.ok(new ResponseMessage<>("공연에 대한 상위 댓글 조회 성공", comments));
+    }
+
+    // 관리자용 댓글 수정
+    @Secured(MemberRoleEnum.Authority.ADMIN)
+    @PutMapping("/admin/{commentId}")
+    public ResponseEntity<ResponseMessage<CommentResponseDto>> updateCommentAsAdmin(@PathVariable Long commentId,
+                                                                                    @RequestBody CommentRequestDto requestDto) {
+        CommentResponseDto responseDto = commentService.updateCommentAsAdmin(commentId, requestDto.getContent());
+        return ResponseEntity.ok(new ResponseMessage<>("댓글이 관리자에 의해 수정되었습니다.", responseDto));
+    }
+
+    // 관리자용 댓글 삭제
+    @Secured(MemberRoleEnum.Authority.ADMIN)
+    @DeleteMapping("/admin/{commentId}")
+    public ResponseEntity<ResponseMessage<Void>> deleteCommentAsAdmin(@PathVariable Long commentId) {
+        commentService.deleteCommentAsAdmin(commentId);
+        return ResponseEntity.ok(new ResponseMessage<>("댓글이 관리자에 의해 삭제되었습니다.", null));
     }
 }

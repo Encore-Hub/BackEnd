@@ -123,4 +123,28 @@ public class CommentService {
         // 공연에 대한 부모 댓글을 좋아요 많은 순서로 조회
         return commentRepository.findParentCommentsByPerformanceOrderedByLikes(performance);
     }
+
+    // 관리자용 댓글 수정
+    @Transactional
+    public CommentResponseDto updateCommentAsAdmin(Long commentId, String newContent) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Comment not found"));
+
+        comment.updateContent(newContent);
+        Comment updatedComment = commentRepository.save(comment);
+
+        return new CommentResponseDto(updatedComment.getId(), updatedComment.getContent(),
+                updatedComment.getMember().getId(), updatedComment.getPfmc().getMt20id(),
+                updatedComment.getCreatedAt(), updatedComment.getUpdatedAt(),
+                updatedComment.getParentComment() != null ? updatedComment.getParentComment().getId() : null);
+    }
+
+    // 관리자용 댓글 삭제
+    @Transactional
+    public void deleteCommentAsAdmin(Long commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Comment not found"));
+
+        commentRepository.delete(comment);
+    }
 }
