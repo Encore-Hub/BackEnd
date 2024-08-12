@@ -1,6 +1,6 @@
 package com.team6.backend.Oauth2.kakao.service;
 
-import com.team6.backend.Oauth2.kakao.Entity.KakaoMember;
+import com.team6.backend.Oauth2.kakao.entity.KakaoMember;
 import com.team6.backend.Oauth2.kakao.dto.KakaoDto;
 import com.team6.backend.Oauth2.kakao.repository.KakaoMemberRepository;
 import com.team6.backend.security.jwt.JwtUtil; // 추가된 JwtUtil import
@@ -39,7 +39,7 @@ public class KakaoService {
     private final static String KAKAO_AUTH_URL = "https://kauth.kakao.com";
     private final static String KAKAO_API_URL = "https://kapi.kakao.com";
 
-    public String getKaKaoLogin() {
+    public String getKakaoLogin() {
         return KAKAO_AUTH_URL + "/oauth/authorize?client_id=" + kakaoClientId + "&redirect_uri=" + kakaoRedirectUrl + "&response_type=code";
     }
 
