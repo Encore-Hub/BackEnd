@@ -53,18 +53,4 @@ public class MemberValidator {
             throw new EncoreHubException(DUPLICATED_PASSWORD);
         }
     }
-
-    public void validateMatchPassword(String storedPassword, String password){
-        if(!passwordEncoder.matches(storedPassword, password)){
-            throw new EncoreHubException(NOT_VALID_PASSWORD);
-        }
-    }
-
-    public boolean validateExistEmail(Member member) {
-        boolean isExistEmail = true;
-        if (member.getEmail() == null) {
-            isExistEmail = false;
-        }
-        return isExistEmail;
-    }
 }
