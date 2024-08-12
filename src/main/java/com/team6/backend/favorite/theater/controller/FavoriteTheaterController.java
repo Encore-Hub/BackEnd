@@ -1,15 +1,13 @@
 package com.team6.backend.favorite.theater.controller;
 
-import com.team6.backend.common.exception.EncoreHubException;
 import com.team6.backend.favorite.theater.dto.FavoriteTheaterRequestDto;
 import com.team6.backend.favorite.theater.dto.FavoriteTheaterResponseDto;
 import com.team6.backend.favorite.theater.service.FavoriteTheaterService;
-import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
+import com.team6.backend.security.jwt.JwtUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,46 +16,40 @@ import java.util.stream.Collectors;
 public class FavoriteTheaterController {
 
     private final FavoriteTheaterService favoriteTheaterService;
-    private final ModelMapper modelMapper;
+    private final JwtUtil jwtUtil;
 
-    public FavoriteTheaterController(FavoriteTheaterService favoriteTheaterService, ModelMapper modelMapper) {
+    public FavoriteTheaterController(FavoriteTheaterService favoriteTheaterService, JwtUtil jwtUtil) {
         this.favoriteTheaterService = favoriteTheaterService;
-        this.modelMapper = modelMapper;
+        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping("/toggle")
-    public ResponseEntity<String> toggleFavoriteTheater(@RequestBody FavoriteTheaterRequestDto request) {
-        try {
-            favoriteTheaterService.toggleFavoriteTheater(request);
-            return ResponseEntity.ok("Favorite status toggled successfully.");
-        } catch (EncoreHubException e) {
-            // Custom exception handling
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Error: " + e.getMessage());
-        } catch (Exception e) {
-            // General exception handling
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Internal Server Error: " + e.getMessage());
+    public ResponseEntity<String> toggleFavoriteTheater(@RequestBody FavoriteTheaterRequestDto request, HttpServletRequest httpServletRequest) {
+        String accessToken = jwtUtil.getAccessTokenFromHeader(httpServletRequest);
+        if (accessToken == null) {
+            return ResponseEntity.badRequest().body("Invalid token.");
         }
+        String email = jwtUtil.getEmailFromToken(accessToken);
+        favoriteTheaterService.toggleFavoriteTheater(request.getTheaterId(), email);
+        return ResponseEntity.ok("Favorite status toggled successfully.");
     }
 
-    @GetMapping("/members/{memberId}/favorite-theaters")
-    public ResponseEntity<List<FavoriteTheaterResponseDto>> getAllFavoriteTheaters(@PathVariable Long memberId) {
-        try {
-            List<FavoriteTheaterResponseDto> favoriteTheaters = favoriteTheaterService.getAllFavoriteTheatersByMemberId(memberId)
-                    .stream()
-                    .map(theater -> modelMapper.map(theater, FavoriteTheaterResponseDto.class))
-                    .collect(Collectors.toList());
-            return ResponseEntity.ok(favoriteTheaters);
-        } catch (EncoreHubException e) {
-            // Custom exception handling
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Collections.emptyList()); // or handle differently based on your application logic
-        } catch (Exception e) {
-            // General exception handling
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Collections.emptyList()); // or handle differently based on your application logic
+    @GetMapping("/favorites")
+    public ResponseEntity<List<FavoriteTheaterResponseDto>> getAllFavoriteTheaters(HttpServletRequest httpServletRequest) {
+        String accessToken = jwtUtil.getAccessTokenFromHeader(httpServletRequest);
+        if (accessToken == null) {
+            return ResponseEntity.badRequest().body(List.of()); // Or handle differently
         }
+        String email = jwtUtil.getEmailFromToken(accessToken);
+        List<FavoriteTheaterResponseDto> favoriteTheaters = favoriteTheaterService.getAllFavoriteTheatersByEmail(email)
+                .stream()
+                .map(theater -> new FavoriteTheaterResponseDto(
+                        theater.getId(),
+                        theater.getTheaterName(),
+                        theater.getTheaterId(),
+                        theater.isFavoriteTheater()
+                ))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(favoriteTheaters);
     }
-
 }
