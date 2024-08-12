@@ -32,22 +32,17 @@ public class FavoriteTheaterService {
     private TheaterDetailRepository theaterDetailRepository;
 
     @Transactional
-    public void toggleFavoriteTheater(FavoriteTheaterRequestDto request) {
-        log.debug("Received request to toggle favorite theater: {}", request);
-
-        // Validate input values
-        if (request.getTheaterId() == null || request.getMemberId() == null) {
-            throw new EncoreHubException(ErrorCode.INVALID_INPUT_VALUE, "Theater ID or Member ID is null");
-        }
+    public void toggleFavoriteTheater(String theaterId, String email) {
+        log.debug("Received request to toggle favorite theater: {}", theaterId);
 
         // Find TheaterDetail
-        TheaterDetail theaterDetail = theaterDetailRepository.findByMt10id(request.getTheaterId())
-                .orElseThrow(() -> new EncoreHubException(ErrorCode.THEATER_NOT_FOUND, "Theater with ID " + request.getTheaterId() + " not found"));
+        TheaterDetail theaterDetail = theaterDetailRepository.findByMt10id(theaterId)
+                .orElseThrow(() -> new EncoreHubException(ErrorCode.THEATER_NOT_FOUND, "Theater with ID " + theaterId + " not found"));
         log.debug("TheaterDetail found: {}", theaterDetail);
 
         // Find Member
-        Member member = memberRepository.findById(request.getMemberId())
-                .orElseThrow(() -> new EncoreHubException(ErrorCode.MEMBER_NOT_FOUND, "Member with ID " + request.getMemberId() + " not found"));
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new EncoreHubException(ErrorCode.MEMBER_NOT_FOUND, "Member with email " + email + " not found"));
         log.debug("Member found: {}", member);
 
         // Find or create FavoriteTheater entry
@@ -67,25 +62,21 @@ public class FavoriteTheaterService {
     }
 
     @Transactional(readOnly = true)
-    public List<FavoriteTheaterResponseDto> getAllFavoriteTheatersByMemberId(Long memberId) {
-        log.debug("회원 ID {}에 대한 모든 즐겨 찾기 극장을 조회합니다.", memberId);
+    public List<FavoriteTheaterResponseDto> getAllFavoriteTheatersByEmail(String email) {
+        log.debug("Fetching all favorite theaters for email: {}", email);
 
-        // 회원 찾기
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new EncoreHubException(ErrorCode.MEMBER_NOT_FOUND, "ID " + memberId + "에 해당하는 회원을 찾을 수 없습니다."));
-        log.debug("회원을 찾았습니다: {}", member);
+        // Find Member by email
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new EncoreHubException(ErrorCode.MEMBER_NOT_FOUND, "Member with email " + email + " not found"));
+        log.debug("Member found: {}", member);
 
-        // 즐겨찾기 극장 찾기
+        // Find favorite theaters for the member
         List<FavoriteTheater> favoriteTheaters = favoriteTheaterRepository.findByMember(member);
-        log.debug("즐겨찾기 극장을 찾았습니다: {}", favoriteTheaters);
+        log.debug("Found favorite theaters: {}", favoriteTheaters);
 
-        // FavoriteTheaterResponseDto 리스트로 변환하여 반환
+        // Convert to FavoriteTheaterResponseDto list
         return favoriteTheaters.stream()
-                .map(ft -> new FavoriteTheaterResponseDto(ft.getId(), ft.getTheaterDetail(), ft.isFavoriteTheater()))
+                .map(ft -> new FavoriteTheaterResponseDto(ft.getId(), ft.getTheaterDetail().getFcltynm(),ft.getTheaterDetail().getMt10id(), ft.isFavoriteTheater()))
                 .collect(Collectors.toList());
     }
-
-
-
-
 }
