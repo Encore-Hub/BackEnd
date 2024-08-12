@@ -64,6 +64,7 @@ public class WebSecurityConfig {
                                 .requestMatchers("/api/theaters/**").permitAll()  // Exclude /api/theaters/** from security
                                 .requestMatchers("/api/region/**").permitAll()   // Exclude /api/region/** from security
                                 .requestMatchers("/api/boxoffice/**").permitAll()
+                                .requestMatchers("/oauth/kakao/callback/**").permitAll()
                                 .anyRequest().authenticated()
                 )
         ;
