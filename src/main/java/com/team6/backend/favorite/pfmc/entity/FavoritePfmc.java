@@ -5,7 +5,7 @@ import com.team6.backend.pfmc.entity.Pfmc;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Entity
