@@ -33,17 +33,18 @@ public class FavoriteTheaterService {
 
     @Transactional
     public void toggleFavoriteTheater(String theaterId, String email) {
-        log.debug("Toggling favorite theater for theater ID {} and email {}", theaterId, email);
 
-        // Find TheaterDetail by ID
+        log.debug("Received request to toggle favorite theater: {}", theaterId);
+
+        // Find TheaterDetail
         TheaterDetail theaterDetail = theaterDetailRepository.findByMt10id(theaterId)
-                .orElseThrow(() -> new EncoreHubException(ErrorCode.THEATER_NOT_FOUND, "Theater not found for ID " + theaterId));
-        log.debug("Found TheaterDetail: {}", theaterDetail);
+                .orElseThrow(() -> new EncoreHubException(ErrorCode.THEATER_NOT_FOUND, "Theater with ID " + theaterId + " not found"));
+        log.debug("TheaterDetail found: {}", theaterDetail);
 
-        // Find member by email
+        // Find Member
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new EncoreHubException(ErrorCode.MEMBER_NOT_FOUND, "Member not found for email " + email));
-        log.debug("Found member: {}", member);
+                .orElseThrow(() -> new EncoreHubException(ErrorCode.MEMBER_NOT_FOUND, "Member with email " + email + " not found"));
+        log.debug("Member found: {}", member);
 
         // Find or create FavoriteTheater
         List<FavoriteTheater> favoriteTheaterList = favoriteTheaterRepository.findByMemberAndTheaterDetail(member, theaterDetail);
@@ -80,6 +81,7 @@ public class FavoriteTheaterService {
                         ft.getTheaterDetail().getMt10id(), // Theater ID
                         ft.isFavorited()
                 ))
+
                 .collect(Collectors.toList());
     }
 }
