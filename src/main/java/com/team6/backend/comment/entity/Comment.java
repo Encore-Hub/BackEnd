@@ -38,11 +38,9 @@ public class Comment {
     @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> childComments = new ArrayList<>(); // 대댓글 목록
 
-    // 좋아요 수 필드 추가
     @Column(nullable = false)
-    private Integer likes = 0;
+    private Integer likes = 0; // 좋아요 수 필드
 
-    // 생성일과 수정일 필드 추가
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -77,5 +75,15 @@ public class Comment {
 
     public void updateContent(String newContent) {
         this.content = newContent;
+    }
+
+    public void increaseLikes() {
+        this.likes++;
+    }
+
+    public void decreaseLikes() {
+        if (this.likes > 0) {
+            this.likes--;
+        }
     }
 }

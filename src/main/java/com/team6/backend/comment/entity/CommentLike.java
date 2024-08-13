@@ -23,8 +23,15 @@ public class CommentLike {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
+    @Column(nullable = false)
+    private boolean liked = false; // 좋아요 상태를 나타내는 필드
+
     public CommentLike(Comment comment, Member member) {
         this.comment = comment;
         this.member = member;
+    }
+
+    public void toggleLike() {
+        this.liked = !this.liked; // 좋아요 상태를 토글
     }
 }
