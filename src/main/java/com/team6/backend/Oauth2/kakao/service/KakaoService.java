@@ -66,7 +66,7 @@ public class KakaoService {
             JSONObject jsonObj = new JSONObject(response.getBody());
             return jsonObj.getString("access_token");
         } catch (Exception e) {
-            throw new Exception("API를 불러오지 못함", e);
+            throw new Exception("Kakao KAPI를 불러오지 못함", e);
         }
     }
 
