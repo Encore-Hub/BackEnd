@@ -24,8 +24,7 @@ public class FavoritePfmc {
     @JoinColumn(name = "pfmc_id")
     private Pfmc pfmc;
     
-    @ColumnDefault("false")
-    private boolean isFavorited = false;
+    private boolean isFavorited;
 
     public FavoritePfmc(Member member, Pfmc pfmc, boolean isFavorited) {
         this.member = member;
