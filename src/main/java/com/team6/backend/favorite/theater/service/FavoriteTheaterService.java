@@ -82,6 +82,7 @@ public class FavoriteTheaterService {
                         ft.isFavorited()
                 ))
 
+
                 .collect(Collectors.toList());
     }
 }

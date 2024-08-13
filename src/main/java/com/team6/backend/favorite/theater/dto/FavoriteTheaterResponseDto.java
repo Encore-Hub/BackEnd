@@ -16,5 +16,6 @@ public class FavoriteTheaterResponseDto {
         this.theaterId = theaterId;
         this.isFavorited = isFavorited;
 
+
     }
 }

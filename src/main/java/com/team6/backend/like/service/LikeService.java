@@ -12,8 +12,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -51,12 +53,24 @@ public class LikeService {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        // 사용자가 좋아요 누른 공연만 필터링하여 리스트 반환
-        return likeRepository.findByMember(member).stream()
-                .filter(Like::isLiked)
-                .map(like -> new LikedPfmcResponseDto(like.getPfmc(), like.isLiked())) // Pfmc와 liked 상태를 함께 반환
+        List<Like> likes = likeRepository.findByMember(member);
+        if (likes == null || likes.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return likes.stream()
+                .map(like -> {
+                    Pfmc pfmc = like.getPfmc();
+                    return new LikedPfmcResponseDto(
+                            pfmc.getMt20id(),
+                            pfmc.getPrfnm(),
+                            pfmc.getPoster(),
+                            like.isLiked()  // 좋아요 상태
+                    );
+                })
                 .collect(Collectors.toList());
     }
+
 
     // 특정 공연에 사용자가 좋아요를 눌렀는지 확인
     public boolean isLiked(String mt20id, String email) {

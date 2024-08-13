@@ -31,11 +31,13 @@ public class FavoriteTheaterController {
         }
         String email = jwtUtil.getEmailFromToken(accessToken);
         favoriteTheaterService.toggleFavoriteTheater(request.getTheaterId(), email);
+
         return ResponseEntity.ok("Favorite theater status toggled successfully.");
     }
 
     @GetMapping("/favorites")
     public ResponseEntity<List<FavoriteTheaterResponseDto>> getFavoriteTheaterList(HttpServletRequest httpServletRequest) {
+
 
         String accessToken = jwtUtil.getAccessTokenFromHeader(httpServletRequest);
         if (accessToken == null) {
@@ -50,6 +52,7 @@ public class FavoriteTheaterController {
                         theater.getTheaterName(),
                         theater.getTheaterId(),
                         theater.isFavorited()
+
                 ))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(favoriteTheaters);
