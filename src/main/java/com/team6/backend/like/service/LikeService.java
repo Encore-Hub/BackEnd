@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 @Service
 @RequiredArgsConstructor
 public class LikeService {
@@ -48,8 +49,8 @@ public class LikeService {
         return likeRepository.countByPfmcAndLiked(pfmc, true);
     }
 
-    public List<LikedPfmcResponseDto> getLikedPerformancesByMember(String email) {
-        Member member = memberRepository.findByEmail(email)
+    public List<Pfmc> getLikedPerformancesByMember(Long memberId) {
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         List<Like> likes = likeRepository.findByMember(member);
