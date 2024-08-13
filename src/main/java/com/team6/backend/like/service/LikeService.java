@@ -49,8 +49,8 @@ public class LikeService {
         return likeRepository.countByPfmcAndLiked(pfmc, true);
     }
 
-    public List<Pfmc> getLikedPerformancesByMember(Long memberId) {
-        Member member = memberRepository.findById(memberId)
+    public List<LikedPfmcResponseDto> getLikedPerformancesByMember(String email) {
+        Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         List<Like> likes = likeRepository.findByMember(member);
