@@ -14,6 +14,7 @@ public class KakaoMember {
     private  Long memberId;
     private String username;
     private String email;
+
     @Enumerated(EnumType.STRING)
     private MemberRoleEnum role;
 
