@@ -9,7 +9,7 @@ public class FavoritePfmcResponseDto {
     private final String performanceId;
     private final String performanceName; // PFMC의 이름
     private final String performancePoster;
-    private boolean isFavorited;
+    private final boolean isFavorited;
 
     public FavoritePfmcResponseDto(Long id, Pfmc pfmc, boolean isFavorited) {
         this.id = id;

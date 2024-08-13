@@ -20,7 +20,7 @@ public class FavoriteTheater {
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "theater_mt10id")
+    @JoinColumn(name = "mt10id")
     private TheaterDetail theaterDetail;
 
     private boolean isFavorited;
