@@ -23,15 +23,15 @@ public class FavoriteTheater {
     @JoinColumn(name = "theater_mt10id")
     private TheaterDetail theaterDetail;
 
-    private boolean favoriteTheater;
+    private boolean isFavorited;
 
-    public FavoriteTheater(Member member, TheaterDetail theaterDetail, boolean favoriteTheater) {
+    public FavoriteTheater(Member member, TheaterDetail theaterDetail, boolean isFavorited) {
         this.member = member;
         this.theaterDetail = theaterDetail;
-        this.favoriteTheater = favoriteTheater;
+        this.isFavorited = isFavorited;
     }
 
     public void toggleFavorite() {
-        this.favoriteTheater = !this.favoriteTheater;
+        this.isFavorited = !this.isFavorited;
     }
 }

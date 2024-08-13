@@ -33,50 +33,55 @@ public class FavoriteTheaterService {
 
     @Transactional
     public void toggleFavoriteTheater(String theaterId, String email) {
-        log.debug("Received request to toggle favorite theater: {}", theaterId);
+        log.debug("Toggling favorite theater for theater ID {} and email {}", theaterId, email);
 
-        // Find TheaterDetail
+        // Find TheaterDetail by ID
         TheaterDetail theaterDetail = theaterDetailRepository.findByMt10id(theaterId)
-                .orElseThrow(() -> new EncoreHubException(ErrorCode.THEATER_NOT_FOUND, "Theater with ID " + theaterId + " not found"));
-        log.debug("TheaterDetail found: {}", theaterDetail);
+                .orElseThrow(() -> new EncoreHubException(ErrorCode.THEATER_NOT_FOUND, "Theater not found for ID " + theaterId));
+        log.debug("Found TheaterDetail: {}", theaterDetail);
 
-        // Find Member
+        // Find member by email
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new EncoreHubException(ErrorCode.MEMBER_NOT_FOUND, "Member with email " + email + " not found"));
-        log.debug("Member found: {}", member);
+                .orElseThrow(() -> new EncoreHubException(ErrorCode.MEMBER_NOT_FOUND, "Member not found for email " + email));
+        log.debug("Found member: {}", member);
 
-        // Find or create FavoriteTheater entry
-        List<FavoriteTheater> favoriteTheaters = favoriteTheaterRepository.findByMemberAndTheaterDetail(member, theaterDetail);
+
+        // Find or create FavoriteTheater
+        List<FavoriteTheater> favoriteTheaterList = favoriteTheaterRepository.findByMemberAndTheaterDetail(member, theaterDetail);
         FavoriteTheater favoriteTheater;
-        if (favoriteTheaters.isEmpty()) {
+        if (favoriteTheaterList.isEmpty()) {
             favoriteTheater = new FavoriteTheater(member, theaterDetail, false);
         } else {
-            favoriteTheater = favoriteTheaters.get(0); // Assuming one entry, can adjust if multiple
+            favoriteTheater = favoriteTheaterList.get(0); // Assume single entry
         }
-        log.debug("FavoriteTheater found or created: {}", favoriteTheater);
+        log.debug("Found or created FavoriteTheater: {}", favoriteTheater);
 
         // Toggle favorite status
         favoriteTheater.toggleFavorite();
         favoriteTheaterRepository.save(favoriteTheater);
-        log.debug("FavoriteTheater toggled and saved: {}", favoriteTheater);
+        log.debug("Saved FavoriteTheater: {}", favoriteTheater);
     }
 
     @Transactional(readOnly = true)
     public List<FavoriteTheaterResponseDto> getAllFavoriteTheatersByEmail(String email) {
-        log.debug("Fetching all favorite theaters for email: {}", email);
+        log.debug("Fetching favorite theaters for email {}", email);
 
-        // Find Member by email
+        // Find member by email
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new EncoreHubException(ErrorCode.MEMBER_NOT_FOUND, "Member with email " + email + " not found"));
-        log.debug("Member found: {}", member);
+                .orElseThrow(() -> new EncoreHubException(ErrorCode.MEMBER_NOT_FOUND, "Member not found for email " + email));
 
         // Find favorite theaters for the member
         List<FavoriteTheater> favoriteTheaters = favoriteTheaterRepository.findByMember(member);
-        log.debug("Found favorite theaters: {}", favoriteTheaters);
 
-        // Convert to FavoriteTheaterResponseDto list
+        // Map to response DTOs
         return favoriteTheaters.stream()
-                .map(ft -> new FavoriteTheaterResponseDto(ft.getId(), ft.getTheaterDetail().getFcltynm(),ft.getTheaterDetail().getMt10id(), ft.isFavoriteTheater()))
+                .map(ft -> new FavoriteTheaterResponseDto(
+                        ft.getId(),
+                        ft.getTheaterDetail().getFcltynm(), // Theater name
+                        ft.getTheaterDetail().getMt10id(), // Theater ID
+                        ft.isFavorited()
+                ))
+
                 .collect(Collectors.toList());
     }
 }

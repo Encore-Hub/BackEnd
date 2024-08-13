@@ -79,7 +79,7 @@ public class TheaterListService {
                 JsonNode root = objectMapper.readTree(jsonString);
                 JsonNode theatersNode = root.path("dbs").path("db");
 
-                if (theatersNode.isMissingNode() || !theatersNode.isArray() || theatersNode.size() == 0) {
+                if (theatersNode.isMissingNode() || !theatersNode.isArray() || theatersNode.isEmpty()) {
                     logger.info("응답에서 극장 정보가 없습니다.");
                     break;
                 }
