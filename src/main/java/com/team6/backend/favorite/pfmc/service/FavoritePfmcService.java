@@ -2,7 +2,7 @@ package com.team6.backend.favorite.pfmc.service;
 
 import com.team6.backend.common.exception.EncoreHubException;
 import com.team6.backend.common.exception.ErrorCode;
-import com.team6.backend.favorite.pfmc.dto.FavoritePfmcRequestDto;
+
 import com.team6.backend.favorite.pfmc.dto.FavoritePfmcResponseDto;
 import com.team6.backend.favorite.pfmc.entity.FavoritePfmc;
 import com.team6.backend.favorite.pfmc.repository.FavoritePfmcRepository;
@@ -32,7 +32,7 @@ public class FavoritePfmcService {
     private PfmcRepository pfmcRepository;
 
     @Transactional
-    public void toggleFavoritePfmc(String performanceId, String email) {
+    public boolean toggleFavoritePfmc(String performanceId, String email) {
         log.debug("Toggling favorite PFMC for performance ID {} and email {}", performanceId, email);
 
         // Find PFMC by performance ID
@@ -45,20 +45,32 @@ public class FavoritePfmcService {
                 .orElseThrow(() -> new EncoreHubException(ErrorCode.MEMBER_NOT_FOUND, "Member not found for email " + email));
         log.debug("Found member: {}", member);
 
-        // Find or create FavoritePfmc
+        // Find FavoritePfmc
         List<FavoritePfmc> favoritePfmcList = favoritePfmcRepository.findByMemberAndPfmc(member, pfmc);
-        FavoritePfmc favoritePfmc;
-        if (favoritePfmcList.isEmpty()) {
-            favoritePfmc = new FavoritePfmc(member, pfmc, false);
-        } else {
-            favoritePfmc = favoritePfmcList.get(0); // Assume single entry
-        }
-        log.debug("Found or created FavoritePfmc: {}", favoritePfmc);
 
-        // Toggle favorite status
-        favoritePfmc.toggleFavorite();
-        favoritePfmcRepository.save(favoritePfmc);
-        log.debug("Saved FavoritePfmc: {}", favoritePfmc);
+        if (favoritePfmcList.isEmpty()) {
+            // No favorite exists, create a new one
+            FavoritePfmc newFavoritePfmc = new FavoritePfmc(member, pfmc, true);
+            favoritePfmcRepository.save(newFavoritePfmc);
+            log.debug("Created new FavoritePfmc: {}", newFavoritePfmc);
+            return true; // Newly favorited
+        } else {
+            // Favorite exists, toggle its status
+            FavoritePfmc favoritePfmc = favoritePfmcList.get(0); // Assuming a single entry
+            favoritePfmc.toggleFavorite();
+
+            if (!favoritePfmc.isFavorited()) {
+                // Status is false, delete from repository
+                favoritePfmcRepository.delete(favoritePfmc);
+                log.debug("Deleted FavoritePfmc: {}", favoritePfmc);
+                return false; // Unfavorited
+            } else {
+                // Status is true, save updated entity
+                favoritePfmcRepository.save(favoritePfmc);
+                log.debug("Updated FavoritePfmc: {}", favoritePfmc);
+                return true; // Still favorited
+            }
+        }
     }
 
     @Transactional(readOnly = true)

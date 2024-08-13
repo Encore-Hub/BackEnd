@@ -2,6 +2,7 @@ package com.team6.backend.favorite.pfmc.controller;
 
 import com.team6.backend.favorite.pfmc.dto.FavoritePfmcRequestDto;
 import com.team6.backend.favorite.pfmc.dto.FavoritePfmcResponseDto;
+import com.team6.backend.favorite.pfmc.dto.FavoritePfmcToggleResponseDto;
 import com.team6.backend.favorite.pfmc.service.FavoritePfmcService;
 import com.team6.backend.security.jwt.JwtUtil;
 import org.springframework.http.ResponseEntity;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @RestController
 @RequestMapping("/api/favorite-pfmc")
@@ -22,19 +23,29 @@ public class FavoritePfmcController {
         this.favoritePfmcService = favoritePfmcService;
         this.jwtUtil = jwtUtil;
     }
-
     @PostMapping("/toggle")
-    public ResponseEntity<String> toggleFavoritePfmc(@RequestBody FavoritePfmcRequestDto request, HttpServletRequest httpServletRequest) {
+    public ResponseEntity<FavoritePfmcToggleResponseDto> toggleFavoritePfmc(
+            @RequestBody FavoritePfmcRequestDto request,
+            HttpServletRequest httpServletRequest) {
+
         String accessToken = jwtUtil.getAccessTokenFromHeader(httpServletRequest);
         if (accessToken == null) {
-            return ResponseEntity.badRequest().body("Invalid token.");
+            return ResponseEntity.badRequest().body(new FavoritePfmcToggleResponseDto("Invalid token.", false));
         }
+
         String email = jwtUtil.getEmailFromToken(accessToken);
-        favoritePfmcService.toggleFavoritePfmc(request.getPerformanceId(), email);
-        return ResponseEntity.ok("Favorite PFMC status toggled successfully.");
+
+        // Toggle favorite status and get the new status
+        boolean isFavorited = favoritePfmcService.toggleFavoritePfmc(request.getPerformanceId(), email);
+
+        // Create response DTO
+        FavoritePfmcToggleResponseDto response = new FavoritePfmcToggleResponseDto("Favorite PFMC status toggled successfully.", isFavorited);
+
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/favorites")
+
+    @GetMapping("/mypage")
     public ResponseEntity<List<FavoritePfmcResponseDto>> getFavoritePfmcList(HttpServletRequest httpServletRequest) {
         String accessToken = jwtUtil.getAccessTokenFromHeader(httpServletRequest);
         if (accessToken == null) {
