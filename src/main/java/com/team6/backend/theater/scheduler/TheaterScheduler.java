@@ -4,7 +4,6 @@ package com.team6.backend.theater.scheduler;
 import com.team6.backend.theater.api.service.TheaterDetailService;
 import com.team6.backend.theater.api.service.TheaterListService;
 import com.team6.backend.theater.api.service.TheaterPfmcDetailService;
-import com.team6.backend.theater.theater.service.TheaterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
