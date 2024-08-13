@@ -48,33 +48,30 @@ public class FavoritePfmcService {
         // Find FavoritePfmc
         List<FavoritePfmc> favoritePfmcList = favoritePfmcRepository.findByMemberAndPfmc(member, pfmc);
 
-        // Check if the favorite exists
         if (favoritePfmcList.isEmpty()) {
-            // If no favorite exists, create a new one with default status as true
+            // No favorite exists, create a new one
             FavoritePfmc newFavoritePfmc = new FavoritePfmc(member, pfmc, true);
             favoritePfmcRepository.save(newFavoritePfmc);
             log.debug("Created new FavoritePfmc: {}", newFavoritePfmc);
-            return true; // Return true since it is newly favorited
+            return true; // Newly favorited
         } else {
-            // If the favorite exists, toggle its status
-            FavoritePfmc favoritePfmc = favoritePfmcList.get(0); // Assume single entry
+            // Favorite exists, toggle its status
+            FavoritePfmc favoritePfmc = favoritePfmcList.get(0); // Assuming a single entry
             favoritePfmc.toggleFavorite();
 
-            // If toggled status is false, delete the entry
             if (!favoritePfmc.isFavorited()) {
+                // Status is false, delete from repository
                 favoritePfmcRepository.delete(favoritePfmc);
                 log.debug("Deleted FavoritePfmc: {}", favoritePfmc);
-                return false; // Return false as it is unfavorited
+                return false; // Unfavorited
+            } else {
+                // Status is true, save updated entity
+                favoritePfmcRepository.save(favoritePfmc);
+                log.debug("Updated FavoritePfmc: {}", favoritePfmc);
+                return true; // Still favorited
             }
-
-            // Otherwise, save the updated status
-            favoritePfmcRepository.save(favoritePfmc);
-            log.debug("Updated FavoritePfmc: {}", favoritePfmc);
-            return true; // Return true since it is favorited
         }
     }
-
-
 
     @Transactional(readOnly = true)
     public List<FavoritePfmcResponseDto> getFavoritePfmcListByEmail(String email) {
