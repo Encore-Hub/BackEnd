@@ -9,7 +9,7 @@ import com.team6.backend.theater.theater.dto.*;
 import com.team6.backend.theater.theater.entity.TheaterDetail;
 import com.team6.backend.theater.theater.entity.TheaterPfmcDetail;
 import com.team6.backend.theater.theater.repository.TheaterDetailRepository;
-import com.team6.backend.theater.theater.repository.TheaterIdRepository;
+
 import com.team6.backend.theater.theater.repository.TheaterPfmcDetailRepository;
 import org.springframework.stereotype.Service;
 
