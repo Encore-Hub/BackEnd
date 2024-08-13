@@ -7,7 +7,6 @@ import com.team6.backend.pfmc.repository.PfmcRepository;
 import com.team6.backend.theater.api.dto.TheaterDto;
 import com.team6.backend.theater.theater.dto.*;
 import com.team6.backend.theater.theater.entity.TheaterDetail;
-import com.team6.backend.theater.theater.entity.TheaterId;
 import com.team6.backend.theater.theater.entity.TheaterPfmcDetail;
 import com.team6.backend.theater.theater.repository.TheaterDetailRepository;
 import com.team6.backend.theater.theater.repository.TheaterIdRepository;
@@ -20,13 +19,11 @@ import java.util.stream.Collectors;
 @Service
 public class TheaterService {
     private final TheaterDetailRepository theaterDetailRepository;
-    private final TheaterIdRepository theaterIdRepository;
     private final TheaterPfmcDetailRepository theaterPfmcDetailRepository;
-    private PfmcRepository pfmcRepository;
+    private final PfmcRepository pfmcRepository;
 
-    public TheaterService(TheaterDetailRepository theaterDetailRepository, TheaterIdRepository theaterIdRepository, PfmcRepository pfmcRepository, TheaterPfmcDetailRepository theaterPfmcDetailRepository) {
+    public TheaterService(TheaterDetailRepository theaterDetailRepository,  PfmcRepository pfmcRepository, TheaterPfmcDetailRepository theaterPfmcDetailRepository) {
         this.theaterDetailRepository = theaterDetailRepository;
-        this.theaterIdRepository = theaterIdRepository;
         this.pfmcRepository = pfmcRepository;
         this.theaterPfmcDetailRepository = theaterPfmcDetailRepository;
     }
