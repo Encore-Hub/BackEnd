@@ -32,7 +32,7 @@ public class FavoritePfmcService {
     private PfmcRepository pfmcRepository;
 
     @Transactional
-    public void toggleFavoritePfmc(String performanceId, String email) {
+    public boolean toggleFavoritePfmc(String performanceId, String email) {
         log.debug("Toggling favorite PFMC for performance ID {} and email {}", performanceId, email);
 
         // Find PFMC by performance ID
@@ -45,21 +45,36 @@ public class FavoritePfmcService {
                 .orElseThrow(() -> new EncoreHubException(ErrorCode.MEMBER_NOT_FOUND, "Member not found for email " + email));
         log.debug("Found member: {}", member);
 
-        // Find or create FavoritePfmc
+        // Find FavoritePfmc
         List<FavoritePfmc> favoritePfmcList = favoritePfmcRepository.findByMemberAndPfmc(member, pfmc);
-        FavoritePfmc favoritePfmc;
-        if (favoritePfmcList.isEmpty()) {
-            favoritePfmc = new FavoritePfmc(member, pfmc, false);
-        } else {
-            favoritePfmc = favoritePfmcList.get(0); // Assume single entry
-        }
-        log.debug("Found or created FavoritePfmc: {}", favoritePfmc);
 
-        // Toggle favorite status
-        favoritePfmc.toggleFavorite();
-        favoritePfmcRepository.save(favoritePfmc);
-        log.debug("Saved FavoritePfmc: {}", favoritePfmc);
+        // Check if the favorite exists
+        if (favoritePfmcList.isEmpty()) {
+            // If no favorite exists, create a new one with default status as true
+            FavoritePfmc newFavoritePfmc = new FavoritePfmc(member, pfmc, true);
+            favoritePfmcRepository.save(newFavoritePfmc);
+            log.debug("Created new FavoritePfmc: {}", newFavoritePfmc);
+            return true; // Return true since it is newly favorited
+        } else {
+            // If the favorite exists, toggle its status
+            FavoritePfmc favoritePfmc = favoritePfmcList.get(0); // Assume single entry
+            favoritePfmc.toggleFavorite();
+
+            // If toggled status is false, delete the entry
+            if (!favoritePfmc.isFavorited()) {
+                favoritePfmcRepository.delete(favoritePfmc);
+                log.debug("Deleted FavoritePfmc: {}", favoritePfmc);
+                return false; // Return false as it is unfavorited
+            }
+
+            // Otherwise, save the updated status
+            favoritePfmcRepository.save(favoritePfmc);
+            log.debug("Updated FavoritePfmc: {}", favoritePfmc);
+            return true; // Return true since it is favorited
+        }
     }
+
+
 
     @Transactional(readOnly = true)
     public List<FavoritePfmcResponseDto> getFavoritePfmcListByEmail(String email) {
