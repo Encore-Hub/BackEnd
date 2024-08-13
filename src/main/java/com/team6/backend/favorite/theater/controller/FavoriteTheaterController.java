@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/favorite-theaters")
@@ -31,25 +30,17 @@ public class FavoriteTheaterController {
         }
         String email = jwtUtil.getEmailFromToken(accessToken);
         favoriteTheaterService.toggleFavoriteTheater(request.getTheaterId(), email);
-        return ResponseEntity.ok("Favorite status toggled successfully.");
+        return ResponseEntity.ok("Favorite theater status toggled successfully.");
     }
 
     @GetMapping("/favorites")
-    public ResponseEntity<List<FavoriteTheaterResponseDto>> getAllFavoriteTheaters(HttpServletRequest httpServletRequest) {
+    public ResponseEntity<List<FavoriteTheaterResponseDto>> getFavoriteTheaterList(HttpServletRequest httpServletRequest) {
         String accessToken = jwtUtil.getAccessTokenFromHeader(httpServletRequest);
         if (accessToken == null) {
             return ResponseEntity.badRequest().body(List.of()); // Or handle differently
         }
         String email = jwtUtil.getEmailFromToken(accessToken);
-        List<FavoriteTheaterResponseDto> favoriteTheaters = favoriteTheaterService.getAllFavoriteTheatersByEmail(email)
-                .stream()
-                .map(theater -> new FavoriteTheaterResponseDto(
-                        theater.getId(),
-                        theater.getTheaterName(),
-                        theater.getTheaterId(),
-                        theater.isFavoriteTheater()
-                ))
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(favoriteTheaters);
+        List<FavoriteTheaterResponseDto> favoriteTheaterList = favoriteTheaterService.getAllFavoriteTheatersByEmail(email);
+        return ResponseEntity.ok(favoriteTheaterList);
     }
 }
