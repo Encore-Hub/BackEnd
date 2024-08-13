@@ -2,9 +2,7 @@ package com.team6.backend.favorite.theater.service;
 
 import com.team6.backend.common.exception.EncoreHubException;
 import com.team6.backend.common.exception.ErrorCode;
-import com.team6.backend.favorite.theater.dto.FavoriteTheaterRequestDto;
 import com.team6.backend.favorite.theater.dto.FavoriteTheaterResponseDto;
-import com.team6.backend.favorite.theater.dto.FavoriteTheaterToggleResponseDto;
 import com.team6.backend.favorite.theater.entity.FavoriteTheater;
 import com.team6.backend.favorite.theater.repository.FavoriteTheaterRepository;
 import com.team6.backend.member.entity.Member;

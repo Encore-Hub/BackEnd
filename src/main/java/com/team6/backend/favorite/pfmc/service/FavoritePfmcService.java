@@ -2,7 +2,7 @@ package com.team6.backend.favorite.pfmc.service;
 
 import com.team6.backend.common.exception.EncoreHubException;
 import com.team6.backend.common.exception.ErrorCode;
-import com.team6.backend.favorite.pfmc.dto.FavoritePfmcRequestDto;
+
 import com.team6.backend.favorite.pfmc.dto.FavoritePfmcResponseDto;
 import com.team6.backend.favorite.pfmc.entity.FavoritePfmc;
 import com.team6.backend.favorite.pfmc.repository.FavoritePfmcRepository;
