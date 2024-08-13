@@ -24,7 +24,10 @@ public class LikeController {
 
     // 좋아요 등록 및 취소
     @PostMapping("/toggle")
-    public ResponseEntity<ResponseMessage<LikeResponseDto>> toggleLike(@RequestBody LikeRequestDto likeRequestDto, HttpServletRequest request) {
+    public ResponseEntity<ResponseMessage<LikeResponseDto>> toggleLike(
+            @RequestBody LikeRequestDto likeRequestDto,
+            HttpServletRequest request) {
+
         String email = jwtUtil.getEmailFromToken(jwtUtil.getAccessTokenFromHeader(request)); // 토큰에서 이메일 추출
         likeService.toggleLike(likeRequestDto.getMt20id(), email);
         boolean isLiked = likeService.isLiked(likeRequestDto.getMt20id(), email);
@@ -33,6 +36,7 @@ public class LikeController {
 
         return ResponseEntity.ok(new ResponseMessage<>("좋아요 상태가 변경되었습니다.", responseDto));
     }
+
 
     // 좋아요 수 조회
     @GetMapping("/{mt20id}/count")
