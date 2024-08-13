@@ -51,7 +51,7 @@ public class FavoriteTheaterController {
 
 
 
-    @GetMapping("/favorites")
+    @GetMapping("/mypage")
     public ResponseEntity<List<FavoriteTheaterResponseDto>> getFavoriteTheaterList(HttpServletRequest httpServletRequest) {
 
 

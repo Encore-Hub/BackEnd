@@ -45,7 +45,7 @@ public class FavoritePfmcController {
     }
 
 
-    @GetMapping("/favorites")
+    @GetMapping("/mypage")
     public ResponseEntity<List<FavoritePfmcResponseDto>> getFavoritePfmcList(HttpServletRequest httpServletRequest) {
         String accessToken = jwtUtil.getAccessTokenFromHeader(httpServletRequest);
         if (accessToken == null) {
