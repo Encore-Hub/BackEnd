@@ -32,58 +32,49 @@ public class FavoritePfmcService {
     private PfmcRepository pfmcRepository;
 
     @Transactional
-    public void toggleFavoritePfmc(FavoritePfmcRequestDto request) {
-        log.debug("즐겨찾기 PFMC를 토글하는 요청이 수신되었습니다: {}", request);
+    public void toggleFavoritePfmc(String performanceId, String email) {
+        log.debug("Toggling favorite PFMC for performance ID {} and email {}", performanceId, email);
 
-        // 입력 값 유효성 검사
-        if (request.getMemberId() == null || request.getMt20id() == null) {
-            throw new EncoreHubException(ErrorCode.INVALID_INPUT_VALUE, "회원 ID 또는 PFMC ID가 null입니다.");
-        }
+        // Find PFMC by performance ID
+        Pfmc pfmc = pfmcRepository.findById(performanceId)
+                .orElseThrow(() -> new EncoreHubException(ErrorCode.PFMC_NOT_FOUND, "PFMC not found for ID " + performanceId));
+        log.debug("Found PFMC: {}", pfmc);
 
-        // ID에 따라 PFMC 찾기
-        Pfmc pfmc = pfmcRepository.findById(request.getMt20id())
-                .orElseThrow(() -> new EncoreHubException(ErrorCode.PFMC_NOT_FOUND, "ID " + request.getMt20id() + "에 해당하는 PFMC를 찾을 수 없습니다."));
-        log.debug("PFMC 찾음: {}", pfmc);
+        // Find member by email
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new EncoreHubException(ErrorCode.MEMBER_NOT_FOUND, "Member not found for email " + email));
+        log.debug("Found member: {}", member);
 
-        // ID에 따라 회원 찾기
-        Member member = memberRepository.findById(request.getMemberId())
-                .orElseThrow(() -> new EncoreHubException(ErrorCode.MEMBER_NOT_FOUND, "ID " + request.getMemberId() + "에 해당하는 회원을 찾을 수 없습니다."));
-        log.debug("회원 찾음: {}", member);
-
-        // 즐겨찾기 PFMC 항목 찾기 또는 생성Z
+        // Find or create FavoritePfmc
         List<FavoritePfmc> favoritePfmcList = favoritePfmcRepository.findByMemberAndPfmc(member, pfmc);
         FavoritePfmc favoritePfmc;
         if (favoritePfmcList.isEmpty()) {
             favoritePfmc = new FavoritePfmc(member, pfmc, false);
         } else {
-            favoritePfmc = favoritePfmcList.get(0); // 하나의 항목만 있는 것으로 가정, 여러 개면 조정 가능
+            favoritePfmc = favoritePfmcList.get(0); // Assume single entry
         }
-        log.debug("즐겨찾기 PFMC 찾거나 생성함: {}", favoritePfmc);
+        log.debug("Found or created FavoritePfmc: {}", favoritePfmc);
 
-        // 즐겨찾기 상태 토글
+        // Toggle favorite status
         favoritePfmc.toggleFavorite();
         favoritePfmcRepository.save(favoritePfmc);
-        log.debug("즐겨찾기 PFMC 토글하고 저장함: {}", favoritePfmc);
+        log.debug("Saved FavoritePfmc: {}", favoritePfmc);
     }
 
     @Transactional(readOnly = true)
-    public List<FavoritePfmcResponseDto> getFavoritePfmcListByMemberId(Long memberId) {
-        log.debug("회원 ID {}에 대한 즐겨 찾기한 PFMC 목록을 조회합니다.", memberId);
+    public List<FavoritePfmcResponseDto> getFavoritePfmcListByEmail(String email) {
+        log.debug("Fetching favorite PFMC list for email {}", email);
 
-        // 회원 ID로 회원을 찾습니다.
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new EncoreHubException(ErrorCode.MEMBER_NOT_FOUND, "회원 ID에 해당하는 회원을 찾을 수 없습니다: " + memberId));
+        // Find member by email
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new EncoreHubException(ErrorCode.MEMBER_NOT_FOUND, "Member not found for email " + email));
 
-        // 회원이 즐겨 찾기한 PFMC 목록을 찾습니다.
+        // Find favorites for member
         List<FavoritePfmc> favoritePfmcList = favoritePfmcRepository.findByMember(member);
 
-        // FavoritePfmc 객체를 FavoritePfmcResponseDto 객체로 변환하여 리스트로 반환합니다.
+        // Map to response DTOs
         return favoritePfmcList.stream()
-                .map(fp -> new FavoritePfmcResponseDto(fp.getId(), fp.getPfmc(), fp.isFavoritePfmc()))
+                .map(fp -> new FavoritePfmcResponseDto(fp.getId(), fp.getPfmc(), fp.isFavorited()))
                 .collect(Collectors.toList());
     }
-
-
-
-
 }

@@ -6,21 +6,20 @@ import lombok.Getter;
 public class FavoritePfmcResponseDto {
 
     private final Long id;
-    private final String pfmcName; // PFMC의 이름
-    private final String prmcPoster;
-    private boolean favoritePfmc;
+    private final String performanceId;
+    private final String performanceName; // PFMC의 이름
+    private final String performancePoster;
+    private final boolean isFavorited;
 
-    public FavoritePfmcResponseDto(Long id, Pfmc pfmc, boolean favoritePfmc) {
+    public FavoritePfmcResponseDto(Long id, Pfmc pfmc, boolean isFavorited) {
         this.id = id;
-        this.pfmcName = pfmc.getPrfnm();
-        this.prmcPoster = pfmc.getPoster();
-        this.favoritePfmc = favoritePfmc;
+        this.performanceId = pfmc.getMt20id();
+        this.performanceName = pfmc.getPrfnm();
+        this.performancePoster = pfmc.getPoster();
+        this.isFavorited = isFavorited;
     }
 
-    // Getter methods for id, pfmcName, prmcPoster, favoritePfmc
 }
-
-    // Getter methods for id, pfmcName, favoritePfmc
 
 
 
