@@ -43,6 +43,9 @@ public class TheaterListService {
     @Value("${api.serviceKey}")
     private String serviceKey;
 
+    @Value("${api.area}")
+    private String area;
+
     private static final int PAGE_SIZE = 1000; // 페이지당 데이터 수
     private static final String BASE_URL = "http://www.kopis.or.kr/openApi/restful/prfplc";
 
@@ -57,7 +60,8 @@ public class TheaterListService {
                 UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(BASE_URL)
                         .queryParam("service", serviceKey)
                         .queryParam("cpage", page)
-                        .queryParam("rows", PAGE_SIZE);
+                        .queryParam("rows", PAGE_SIZE)
+                        .queryParam("signgucode", area);
 
                 // API 호출
                 String response = restTemplate.getForObject(builder.toUriString(), String.class);
@@ -97,7 +101,7 @@ public class TheaterListService {
                         String sidonm = node.path("sidonm").asText();
                         String gugunnm = node.path("gugunnm").asText();
 
-                        if ("서울".equals(sidonm)) {
+
                             // Sidonm 데이터 저장
                             Optional<Sidonm> sidonmOpt = sidonmRepository.findBySidonm(sidonm);
                             if (sidonmOpt.isEmpty()) {
@@ -109,9 +113,9 @@ public class TheaterListService {
                             if (gugunnmOpt.isEmpty()) {
                                 gugunnmRepository.save(new Gugunnm(gugunnm, sidonm));
                             }
-                        }
 
-                        if ("서울".equals(sidonm) && !existingMt10ids.contains(mt10id)) {
+
+                        if (!existingMt10ids.contains(mt10id)) {
                             TheaterId theaterId = new TheaterId(mt10id, fcltynm, fcltychartr, sidonm, gugunnm);
                             theaterIdBatch.add(theaterId);
 

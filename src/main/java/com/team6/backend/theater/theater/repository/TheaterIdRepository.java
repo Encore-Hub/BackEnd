@@ -6,8 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TheaterIdRepository extends JpaRepository<TheaterId, Long> {
-    List<TheaterId> findBySidonmAndGugunnm(String sidonm, String gugunnm);
+    Optional<TheaterId> findByMt10id(String mt10id);
 }

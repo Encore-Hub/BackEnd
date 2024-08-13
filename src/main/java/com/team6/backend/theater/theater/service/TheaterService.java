@@ -8,8 +8,10 @@ import com.team6.backend.theater.api.dto.TheaterDto;
 import com.team6.backend.theater.theater.dto.*;
 import com.team6.backend.theater.theater.entity.TheaterDetail;
 import com.team6.backend.theater.theater.entity.TheaterId;
+import com.team6.backend.theater.theater.entity.TheaterPfmcDetail;
 import com.team6.backend.theater.theater.repository.TheaterDetailRepository;
 import com.team6.backend.theater.theater.repository.TheaterIdRepository;
+import com.team6.backend.theater.theater.repository.TheaterPfmcDetailRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,12 +21,14 @@ import java.util.stream.Collectors;
 public class TheaterService {
     private final TheaterDetailRepository theaterDetailRepository;
     private final TheaterIdRepository theaterIdRepository;
+    private final TheaterPfmcDetailRepository theaterPfmcDetailRepository;
     private PfmcRepository pfmcRepository;
 
-    public TheaterService(TheaterDetailRepository theaterDetailRepository, TheaterIdRepository theaterIdRepository, PfmcRepository pfmcRepository) {
+    public TheaterService(TheaterDetailRepository theaterDetailRepository, TheaterIdRepository theaterIdRepository, PfmcRepository pfmcRepository, TheaterPfmcDetailRepository theaterPfmcDetailRepository) {
         this.theaterDetailRepository = theaterDetailRepository;
         this.theaterIdRepository = theaterIdRepository;
         this.pfmcRepository = pfmcRepository;
+        this.theaterPfmcDetailRepository = theaterPfmcDetailRepository;
     }
 
     // 지역별 공연장 리스트 조회
@@ -33,10 +37,10 @@ public class TheaterService {
         String gugunnm = regionTheaterRequestDto.getGugunnm();
 
         // DB에서 공연장 리스트 검색
-        List<TheaterId> theaterIds = theaterIdRepository.findBySidonmAndGugunnm(sidonm, gugunnm);
+        List<TheaterPfmcDetail> theaterPfmcDetails = theaterPfmcDetailRepository.findBySidonmAndGugunnm(sidonm, gugunnm);
 
         // 공연장 리스트에서 "폐관" 상태의 공연장을 필터링하고 DTO로 변환
-        return theaterIds.stream()
+        return theaterPfmcDetails.stream()
                 .filter(theater -> !theater.getFcltynm().contains("폐관"))
                 .map(theater -> new RegionTheaterResponseDto(theater.getMt10id(), theater.getFcltynm()))
                 .collect(Collectors.toList());
