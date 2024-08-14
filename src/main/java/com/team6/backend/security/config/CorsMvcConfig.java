@@ -13,7 +13,8 @@ public class CorsMvcConfig implements WebMvcConfigurer {
                 .allowedOrigins(
                         "http://localhost:3000",
                         "http://localhost:5173",
-                        "http://localhost:5174"
+                        "http://localhost:5174",
+                        "https://encorehub.vercel.app/"
                 );
     }
 }
