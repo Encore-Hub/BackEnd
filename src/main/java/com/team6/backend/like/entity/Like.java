@@ -24,15 +24,11 @@ public class Like {
     @JoinColumn(name = "pfmc_id", nullable = false)
     private Pfmc pfmc;
 
-    private boolean liked = false;
+    private boolean liked = true;  // 기본값을 true로 설정
 
-    public Like(Member member, Pfmc pfmc, boolean liked) {
+    public Like(Member member, Pfmc pfmc) {
         this.member = member;
         this.pfmc = pfmc;
-        this.liked = liked;
     }
 
-    public void toggleLiked() {
-        this.liked = !this.liked;
-    }
 }

@@ -36,14 +36,18 @@ public class CommentLikeService {
         if (existingLike == null) {
             // 좋아요가 없는 경우 추가
             CommentLike like = new CommentLike(comment, member);
-            like.toggleLike(); // 새 좋아요를 추가할 때 상태를 true로 변경
             commentLikeRepository.save(like);
             liked = true;
         } else {
             // 이미 좋아요가 있는 경우 상태를 토글
             existingLike.toggleLike();
-            liked = existingLike.isLiked();
-            commentLikeRepository.save(existingLike); // 상태 변경을 저장
+            if (existingLike.isLiked()) {
+                commentLikeRepository.save(existingLike);
+                liked = true;
+            } else {
+                commentLikeRepository.delete(existingLike);
+                liked = false;
+            }
         }
 
         // 최종 좋아요 수를 반환
@@ -51,10 +55,8 @@ public class CommentLikeService {
         return new CommentLikeResponseDto(requestDto.getCommentId(), likeCount, liked);
     }
 
-
     public CommentLikeResponseDto getLikeCount(Long commentId) {
         long likeCount = commentLikeRepository.countByCommentId(commentId);
-        return new CommentLikeResponseDto(commentId, likeCount); // liked를 기본값으로 설정
+        return new CommentLikeResponseDto(commentId, likeCount);
     }
-
 }
