@@ -1,25 +1,17 @@
 package com.team6.backend.Oauth2.kakao.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.team6.backend.Oauth2.kakao.dto.KakaoDto;
 import com.team6.backend.Oauth2.kakao.service.KakaoService;
+import com.team6.backend.security.jwt.JwtUtil;
 import jakarta.servlet.http.HttpServletResponse;
-
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-
 import org.springframework.web.bind.annotation.RequestParam;
-
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.http.HttpHeaders;
+import jakarta.servlet.http.Cookie;
 
+import java.util.Map;
 
-
-
-import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,35 +19,30 @@ public class KakaoController {
 
     private final KakaoService kakaoService;
 
-
-    @GetMapping("/login/kakao")
-    public void kakaoLogin(HttpServletResponse response) throws IOException {
-        response.sendRedirect(kakaoService.getKakaoLogin());
-    }
-
     @GetMapping("/oauth/kakao/callback")
-    public ResponseEntity<String> kakaoCallback(@RequestParam String code) throws Exception {
-        KakaoDto kakaoDto = kakaoService.getKakaoInfo(code);
+    public String kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+        // KakaoService를 통해 로그인하고, 액세스 토큰과 리프레시 토큰을 포함하는 Map을 받아온다.
+        Map<String, String> tokens = kakaoService.kakaoLogin(code);
 
-        // 헤더에 JWT 토큰 추가
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + kakaoDto.getJwtToken());
+        // Access Token과 Refresh Token을 Map에서 추출
+        String accessToken = tokens.get("accessToken");
+        String refreshToken = tokens.get("refreshToken");
 
-        // KakaoDto 객체를 JSON 문자열로 변환
-        String kakaoDtoJson = convertToJson(kakaoDto);
+        // Access Token을 쿠키에 저장
+        Cookie accessTokenCookie = new Cookie(JwtUtil.AUTHORIZATION_ACCESS, accessToken);
+        accessTokenCookie.setPath("/");
+        accessTokenCookie.setHttpOnly(true); // 클라이언트 스크립트에서 접근 불가
 
-        // 본문에 JSON 데이터를 담아 반환
-        return new ResponseEntity<>(kakaoDtoJson, headers, HttpStatus.OK);
-    }
+        // Refresh Token을 쿠키에 저장
+        Cookie refreshTokenCookie = new Cookie(JwtUtil.AUTHORIZATION_REFRESH, refreshToken);
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setHttpOnly(true); // 클라이언트 스크립트에서 접근 불가
 
-    // KakaoDto를 JSON 문자열로 변환하는 메서드
-    private String convertToJson(KakaoDto kakaoDto) {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.writeValueAsString(kakaoDto);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return "{}"; // 변환 실패 시 빈 JSON 반환
-        }
+        // 쿠키를 응답에 추가
+        response.addCookie(accessTokenCookie);
+        response.addCookie(refreshTokenCookie);
+
+        // 사용자를 리다이렉트
+        return "redirect:/";
     }
 }
