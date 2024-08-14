@@ -72,7 +72,7 @@ public class WebSecurityConfig {
             public CorsConfiguration getCorsConfiguration(@Nullable HttpServletRequest request) {
                 CorsConfiguration configuration = new CorsConfiguration();
 
-                configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:5173"));
+                configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:5173", "https://encorehub.vercel.app/"));
                 configuration.setAllowedMethods(Collections.singletonList("*"));
                 configuration.setAllowCredentials(true);
                 configuration.setAllowedHeaders(Collections.singletonList("*"));
