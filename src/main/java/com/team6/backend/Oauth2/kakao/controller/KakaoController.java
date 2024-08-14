@@ -20,27 +20,12 @@ public class KakaoController {
     private final KakaoService kakaoService;
 
     @GetMapping("/oauth/kakao/callback")
-    public String kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
-        // KakaoService를 통해 로그인하고, 액세스 토큰과 리프레시 토큰을 포함하는 Map을 받아온다.
-        Map<String, String> tokens = kakaoService.kakaoLogin(code);
+    public String KakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+        String token = kakaoService.KakaoLogin(code);
 
-        // Access Token과 Refresh Token을 Map에서 추출
-        String accessToken = tokens.get("accessToken");
-        String refreshToken = tokens.get("refreshToken");
-
-        // Access Token을 쿠키에 저장
-        Cookie accessTokenCookie = new Cookie(JwtUtil.AUTHORIZATION_ACCESS, accessToken);
-        accessTokenCookie.setPath("/");
-        accessTokenCookie.setHttpOnly(true); // 클라이언트 스크립트에서 접근 불가
-
-        // Refresh Token을 쿠키에 저장
-        Cookie refreshTokenCookie = new Cookie(JwtUtil.AUTHORIZATION_REFRESH, refreshToken);
-        refreshTokenCookie.setPath("/");
-        refreshTokenCookie.setHttpOnly(true); // 클라이언트 스크립트에서 접근 불가
-
-        // 쿠키를 응답에 추가
-        response.addCookie(accessTokenCookie);
-        response.addCookie(refreshTokenCookie);
+        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_ACCESS, token.substring(7));
+        cookie.setPath("/");
+        response.addCookie(cookie);
 
         // 사용자를 리다이렉트
         return "redirect:/";
