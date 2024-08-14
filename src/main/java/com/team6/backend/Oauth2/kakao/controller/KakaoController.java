@@ -19,7 +19,7 @@ public class KakaoController {
     private final KakaoService kakaoService;
 
     @GetMapping("/oauth/kakao/callback")
-    public void KakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException, IOException {
+    public void KakaoLogin(@RequestParam String code, HttpServletResponse response) throws IOException {
         String token = kakaoService.KakaoLogin(code);
 
         Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_ACCESS, token.substring(7));
