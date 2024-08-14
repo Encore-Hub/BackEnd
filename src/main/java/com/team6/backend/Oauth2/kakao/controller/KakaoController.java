@@ -26,6 +26,6 @@ public class KakaoController {
         response.addCookie(cookie);
 
         // 사용자를 리다이렉트
-        response.sendRedirect("https://encorehub.vercel.app");
+        response.sendRedirect("http://localhost:5173/");
     }
 }
