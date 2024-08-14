@@ -10,4 +10,11 @@ import lombok.NoArgsConstructor;
 public class CommentLikeResponseDto {
     private Long commentId;
     private Long likeCount;
+    private boolean liked;
+
+    // 두 개의 매개변수를 받는 생성자
+    public CommentLikeResponseDto(Long commentId, Long likeCount) {
+        this.commentId = commentId;
+        this.likeCount = likeCount;
+    }
 }

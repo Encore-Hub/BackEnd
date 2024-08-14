@@ -22,10 +22,10 @@ public class CommentLikeController {
 
     // 좋아요 등록 및 취소
     @PostMapping("/toggle")
-    public ResponseEntity<ResponseMessage<Void>> toggleLike(@RequestBody CommentLikeRequestDto requestDto, HttpServletRequest request) {
-        String email = jwtUtil.getEmailFromToken(jwtUtil.getAccessTokenFromHeader(request)); // 토큰에서 이메일 추출
-        commentLikeService.toggleLike(requestDto, email);
-        return new ResponseEntity<>(new ResponseMessage<>("좋아요 상태가 변경되었습니다.", null), HttpStatus.OK);
+    public ResponseEntity<ResponseMessage<CommentLikeResponseDto>> toggleLike(@RequestBody CommentLikeRequestDto requestDto, HttpServletRequest request) {
+        String email = jwtUtil.getEmailFromToken(jwtUtil.getAccessTokenFromHeader(request));
+        CommentLikeResponseDto responseDto = commentLikeService.toggleLike(requestDto, email);
+        return new ResponseEntity<>(new ResponseMessage<>("좋아요 상태가 변경되었습니다.", responseDto), HttpStatus.OK);
     }
 
     // 댓글의 좋아요 수 조회

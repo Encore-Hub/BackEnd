@@ -32,20 +32,23 @@ public class CommentLikeService {
         CommentLike existingLike = commentLikeRepository.findByCommentIdAndMemberEmail(requestDto.getCommentId(), email)
                 .orElse(null);
 
+        boolean liked;
         if (existingLike == null) {
             // 좋아요가 없는 경우 추가
             CommentLike like = new CommentLike(comment, member);
             like.toggleLike(); // 새 좋아요를 추가할 때 상태를 true로 변경
             commentLikeRepository.save(like);
+            liked = true;
         } else {
             // 이미 좋아요가 있는 경우 상태를 토글
             existingLike.toggleLike();
+            liked = existingLike.isLiked();
             commentLikeRepository.save(existingLike); // 상태 변경을 저장
         }
 
         // 최종 좋아요 수를 반환
         long likeCount = commentLikeRepository.countByCommentId(requestDto.getCommentId());
-        return new CommentLikeResponseDto(requestDto.getCommentId(), likeCount);
+        return new CommentLikeResponseDto(requestDto.getCommentId(), likeCount, liked);
     }
 
 
