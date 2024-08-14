@@ -54,6 +54,7 @@ public class CommentLikeService {
 
     public CommentLikeResponseDto getLikeCount(Long commentId) {
         long likeCount = commentLikeRepository.countByCommentId(commentId);
-        return new CommentLikeResponseDto(commentId, likeCount);
+        return new CommentLikeResponseDto(commentId, likeCount); // liked를 기본값으로 설정
     }
+
 }
