@@ -1,6 +1,5 @@
 package com.team6.backend.Oauth2.kakao.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.team6.backend.Oauth2.kakao.service.KakaoService;
 import com.team6.backend.security.jwt.JwtUtil;
 import jakarta.servlet.http.HttpServletResponse;
