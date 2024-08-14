@@ -15,7 +15,7 @@ public class CorsMvcConfig implements WebMvcConfigurer {
                         "http://localhost:5173",
                         "http://localhost:5174",
                         "https://encorehub.vercel.app/",
-                        "https://api.encorehub.kro.kr/"
+                        "https://api.encorehub.kro.kr"
                 );
     }
 }
