@@ -8,6 +8,7 @@ import io.swagger.v3.oas.models.media.*;
 import io.swagger.v3.oas.models.parameters.RequestBody;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.responses.ApiResponses;
+import io.swagger.v3.oas.models.servers.Server;
 import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
@@ -28,6 +29,8 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI openAPI() {
 
+        Server server = new Server();
+        server.setUrl("https://api.encorehub.kro.kr");
         Info info = new Info()
                 .version("v1.0.0")
                 .title("Encore Hub API")
@@ -35,7 +38,8 @@ public class SwaggerConfig {
 
 
         return new OpenAPI()
-                .info(info);
+                .info(info)
+                .addServersItem(server);
     }
 
     @Bean
