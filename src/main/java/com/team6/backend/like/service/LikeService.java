@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -34,19 +35,16 @@ public class LikeService {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        Like like = likeRepository.findByMemberAndPfmc(member, pfmc)
-                .orElseGet(() -> new Like(member, pfmc, false)); // 없을 경우 새로 생성
+        Optional<Like> existingLike = likeRepository.findByMemberAndPfmc(member, pfmc);
 
-        like.toggleLiked(); // 상태 변경
-        likeRepository.save(like);
-    }
+        if (existingLike.isPresent()) {
 
-    // 특정 공연의 좋아요 수 조회
-    public long getLikeCount(String mt20id) {
-        Pfmc pfmc = pfmcRepository.findById(mt20id)
-                .orElseThrow(() -> new ResourceNotFoundException("Performance not found"));
+            likeRepository.delete(existingLike.get());
+        } else {
 
-        return likeRepository.countByPfmcAndLiked(pfmc, true);
+            Like like = new Like(member, pfmc);
+            likeRepository.save(like);
+        }
     }
 
     public List<LikedPfmcResponseDto> getLikedPerformancesByMember(String email) {
