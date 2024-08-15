@@ -15,6 +15,6 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
     // 특정 사용자가 좋아요한 모든 Like 엔티티를 조회하는 메소드
     List<Like> findByMember(Member member);
 
-    // 특정 공연에 좋아요가 눌린 총 개수를 조회하는 메소드
-    long countByPfmcAndLiked(Pfmc pfmc, boolean liked);
+    long countByPfmc(Pfmc pfmc);
+
 }
