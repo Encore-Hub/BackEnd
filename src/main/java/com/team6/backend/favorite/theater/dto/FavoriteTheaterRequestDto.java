@@ -8,5 +8,5 @@ import lombok.AllArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FavoriteTheaterRequestDto {
-    private String theaterId; // Theater ID as a String
+    private String mt10id; // Theater ID as a String
 }

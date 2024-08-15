@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FavoritePfmcRequestDto {
 
-    private String performanceId;
+    private String mt20id;
 }
 
