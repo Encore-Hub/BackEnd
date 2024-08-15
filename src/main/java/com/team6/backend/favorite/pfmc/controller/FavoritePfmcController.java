@@ -36,7 +36,7 @@ public class FavoritePfmcController {
         String email = jwtUtil.getEmailFromToken(accessToken);
 
         // Toggle favorite status and get the new status
-        boolean isFavorited = favoritePfmcService.toggleFavoritePfmc(request.getPerformanceId(), email);
+        boolean isFavorited = favoritePfmcService.toggleFavoritePfmc(request.getMt20id(), email);
 
         // Create response DTO
         FavoritePfmcToggleResponseDto response = new FavoritePfmcToggleResponseDto("Favorite PFMC status toggled successfully.", isFavorited);

@@ -38,7 +38,7 @@ public class FavoriteTheaterController {
         String email = jwtUtil.getEmailFromToken(accessToken);
 
         // Toggle favorite status and get the new status
-        boolean isFavorited = favoriteTheaterService.toggleFavoriteTheater(request.getTheaterId(), email);
+        boolean isFavorited = favoriteTheaterService.toggleFavoriteTheater(request.getMt10id(), email);
 
         // Create response DTO
         FavoriteTheaterToggleResponseDto response = new FavoriteTheaterToggleResponseDto(
@@ -65,8 +65,8 @@ public class FavoriteTheaterController {
                 .stream()
                 .map(theater -> new FavoriteTheaterResponseDto(
                         theater.getId(),
-                        theater.getTheaterName(),
-                        theater.getTheaterId(),
+                        theater.getFcltynm(),
+                        theater.getMt10id(),
                         theater.isFavorited()
 
                 ))
