@@ -38,13 +38,19 @@ public class LikeService {
         Optional<Like> existingLike = likeRepository.findByMemberAndPfmc(member, pfmc);
 
         if (existingLike.isPresent()) {
-
             likeRepository.delete(existingLike.get());
         } else {
-
             Like like = new Like(member, pfmc);
             likeRepository.save(like);
         }
+    }
+
+    // 좋아요 수 조회 메서드 추가
+    public long getLikeCount(String mt20id) {
+        Pfmc pfmc = pfmcRepository.findById(mt20id)
+                .orElseThrow(() -> new ResourceNotFoundException("Performance not found"));
+
+        return likeRepository.countByPfmc(pfmc);
     }
 
     public List<LikedPfmcResponseDto> getLikedPerformancesByMember(String email) {
@@ -63,12 +69,11 @@ public class LikeService {
                             pfmc.getMt20id(),
                             pfmc.getPrfnm(),
                             pfmc.getPoster(),
-                            like.isLiked()  // 좋아요 상태
+                            like.isLiked()
                     );
                 })
                 .collect(Collectors.toList());
     }
-
 
     // 특정 공연에 사용자가 좋아요를 눌렀는지 확인
     public boolean isLiked(String mt20id, String email) {
