@@ -108,6 +108,7 @@ public class TheaterPfmcDetailService {
     }
 
     private void saveOrUpdateTheaterDetails(String mt10id, TheaterPfmcDetailDto theaterDetailData) {
+        // TheaterId 찾기
         Optional<TheaterId> theaterIdOpt = theaterIdRepository.findByMt10id(mt10id);
         if (theaterIdOpt.isEmpty()) {
             System.err.println("No TheaterId found for mt10id: " + mt10id);
@@ -116,44 +117,15 @@ public class TheaterPfmcDetailService {
 
         TheaterId theaterId = theaterIdOpt.get();
 
-        Optional<TheaterPfmcDetail> existingTheaterOpt = theaterPfmcDetailRepository.findById(mt10id);
+        // 기존 TheaterPfmcDetail 삭제
+        theaterPfmcDetailRepository.deleteById(mt10id);
 
-        if (existingTheaterOpt.isPresent()) {
-            TheaterPfmcDetail existingTheater = existingTheaterOpt.get();
-            TheaterPfmcDetail updatedTheater = updateTheater(existingTheater, theaterDetailData, theaterId);
-
-            if (!existingTheater.equals(updatedTheater)) {
-                theaterPfmcDetailRepository.save(updatedTheater);
-                System.out.println("Updated Theater: " + updatedTheater);
-            } else {
-                System.out.println("No changes for Theater ID: " + mt10id);
-            }
-        } else {
-            TheaterPfmcDetail newTheater = TheaterPfmcDetail.builder()
-                    .mt10id(mt10id)
-                    .fcltychartr(theaterDetailData.getFcltychartr())
-                    .sidonm(theaterId.getSidonm())
-                    .gugunnm(theaterId.getGugunnm())
-                    .fcltynm(theaterDetailData.getFcltynm())
-                    .seatscale(theaterDetailData.getSeatscale())
-                    .mt13cnt(theaterDetailData.getMt13cnt())
-                    .telno(theaterDetailData.getTelno())
-                    .adres(theaterDetailData.getAdres())
-                    .la(theaterDetailData.getLa())
-                    .lo(theaterDetailData.getLo())
-                    .parkinglot(theaterDetailData.getParkinglot())
-                    .build();
-
-            TheaterPfmcDetail savedTheater = theaterPfmcDetailRepository.save(newTheater);
-            System.out.println("Saved new Theater: " + savedTheater);
-        }
-    }
-
-    private TheaterPfmcDetail updateTheater(TheaterPfmcDetail existingTheater, TheaterPfmcDetailDto theaterDetailData, TheaterId theaterId) {
-        return existingTheater.toBuilder()
+        // 새 TheaterPfmcDetail 생성
+        TheaterPfmcDetail newTheater = TheaterPfmcDetail.builder()
+                .mt10id(mt10id)
                 .fcltychartr(theaterDetailData.getFcltychartr())
-                .sidonm(theaterId.getSidonm()) // Update with the value from TheaterId
-                .gugunnm(theaterId.getGugunnm()) // Update with the value from TheaterId
+                .sidonm(theaterId.getSidonm())
+                .gugunnm(theaterId.getGugunnm())
                 .fcltynm(theaterDetailData.getFcltynm())
                 .seatscale(theaterDetailData.getSeatscale())
                 .mt13cnt(theaterDetailData.getMt13cnt())
@@ -163,5 +135,9 @@ public class TheaterPfmcDetailService {
                 .lo(theaterDetailData.getLo())
                 .parkinglot(theaterDetailData.getParkinglot())
                 .build();
+
+        // 새 데이터 저장
+        TheaterPfmcDetail savedTheater = theaterPfmcDetailRepository.save(newTheater);
+        System.out.println("Saved new Theater: " + savedTheater);
     }
 }

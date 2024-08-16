@@ -10,4 +10,7 @@ import lombok.NoArgsConstructor;
 public class RegionTheaterResponseDto {
     private String mt10id;
     private String fcltynm;
+    private String adres;
+    private double la;
+    private double lo;
 }
