@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<String> handleEncoreHubException(EncoreHubException e) {
-        logger.error("EncoreHubException occurred", e);
+        logger.error("EncoreHubException occurred: {}", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
     }
 
@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseEntity<String> handleExpiredJwtException(ExpiredJwtException e) {
-        logger.error("JWT token expired", e);
+        logger.error("JWT token expired: {}", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("JWT token has expired.");
     }
 
@@ -35,15 +35,23 @@ public class GlobalExceptionHandler {
     @ResponseBody
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ResponseEntity<String> handleSecurityException(SecurityException e) {
-        logger.error("Security exception occurred", e);
+        logger.error("Security exception occurred: {}", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Security exception occurred.");
+    }
+
+    @ExceptionHandler(TheaterException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<String> handleTheaterException(TheaterException e) {
+        logger.error("TheaterException occurred: {}", e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Theater error: " + e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<String> handleException(Exception e) {
-        logger.error("Unexpected error occurred", e);
+        logger.error("Unexpected error occurred: {}", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
     }
 }
