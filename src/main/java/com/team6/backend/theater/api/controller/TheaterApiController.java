@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/openapi/theaters")
 public class TheaterApiController {
 
-    private static final Logger logger = LoggerFactory.getLogger(TheaterApiController.class);
-
     private final TheaterListService theaterListService;
     private final TheaterDetailService theaterDetailService;
     private final TheaterPfmcDetailService theaterPfmcDetailService;
