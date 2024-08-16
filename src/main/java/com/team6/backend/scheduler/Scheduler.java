@@ -28,7 +28,7 @@ public class Scheduler {
     @Autowired
     private PfmcApi pfmcapi ;
 
-    @Scheduled(cron = "0 20 12 * * *") // 매일 낮 12시 에 실행
+    @Scheduled(cron = "0 30 1 * * *") // 매일 낮 12시 에 실행
     public void scheduleTheaterUpdates() throws Exception {
 
         pfmclistApi.callPfmcListApiJson();

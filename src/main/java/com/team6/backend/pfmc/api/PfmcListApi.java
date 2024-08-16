@@ -77,7 +77,6 @@ public class PfmcListApi {
             JsonNode dbNode = dbsNode.path("db");
 
             // 기존 데이터를 삭제
-            pfmcListRepository.deleteAll();
 
             // 새로운 데이터를 변환하여 저장
             List<com.team6.backend.pfmc.entity.PfmcList> pfmcList = objectMapper.convertValue(dbNode, new TypeReference<List<com.team6.backend.pfmc.entity.PfmcList>>() {});
