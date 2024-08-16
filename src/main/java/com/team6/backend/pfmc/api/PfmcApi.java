@@ -113,6 +113,7 @@ public class PfmcApi {
                                 pfmc.addStyurl(styurlNode.asText());
                             }
                         }
+                        pfmcRepository.deleteAll();
 
                         // DB 저장
                         pfmcRepository.save(pfmc);
