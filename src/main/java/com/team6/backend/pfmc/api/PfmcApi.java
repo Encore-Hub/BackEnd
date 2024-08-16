@@ -96,6 +96,7 @@ public class PfmcApi {
                         pfmc.setChild(dbNode.path("child").asText());
 
                         // 관련 링크(relates) 정보 설정
+                        // 관련 링크(relates) 정보 설정
                         JsonNode relatesNode = dbNode.path("relates").path("relate");
                         if (relatesNode.isArray()) {
                             for (JsonNode relateNode : relatesNode) {
@@ -104,6 +105,12 @@ public class PfmcApi {
                                 RelateInfo relateInfo = new RelateInfo(relatenm, relateurl);
                                 pfmc.addRelateInfo(relateInfo);
                             }
+                        } else if (relatesNode.isObject() && relatesNode.has("relate")) {
+                            JsonNode relateNode = relatesNode.path("relate");
+                            String relatenm = relateNode.path("relatenm").asText();
+                            String relateurl = relateNode.path("relateurl").asText();
+                            RelateInfo relateInfo = new RelateInfo(relatenm, relateurl);
+                            pfmc.addRelateInfo(relateInfo);
                         }
 
                         // 스타일 URL(styurls) 정보 설정
@@ -112,8 +119,10 @@ public class PfmcApi {
                             for (JsonNode styurlNode : styurlsNode) {
                                 pfmc.addStyurl(styurlNode.asText());
                             }
+                        } else if (styurlsNode.isObject() && styurlsNode.has("styurl")) {
+                            JsonNode styurlNode = styurlsNode.path("styurl");
+                            pfmc.addStyurl(styurlNode.asText());
                         }
-                        pfmcRepository.deleteAll();
 
                         // DB 저장
                         pfmcRepository.save(pfmc);
