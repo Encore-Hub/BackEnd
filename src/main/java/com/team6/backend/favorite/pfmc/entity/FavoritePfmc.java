@@ -5,7 +5,7 @@ import com.team6.backend.pfmc.entity.Pfmc;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Entity
@@ -24,16 +24,15 @@ public class FavoritePfmc {
     @JoinColumn(name = "pfmc_id")
     private Pfmc pfmc;
     
-    @ColumnDefault("false")
-    private boolean favoritePfmc = false;
+    private boolean isFavorited;
 
-    public FavoritePfmc(Member member, Pfmc pfmc, boolean favoritePfmc) {
+    public FavoritePfmc(Member member, Pfmc pfmc, boolean isFavorited) {
         this.member = member;
         this.pfmc = pfmc;
-        this.favoritePfmc = favoritePfmc;
+        this.isFavorited = isFavorited;
     }
 
     public void toggleFavorite() {
-        this.favoritePfmc = !this.favoritePfmc;
+        this.isFavorited = !this.isFavorited;
     }
 }

@@ -6,14 +6,14 @@ import lombok.Getter;
 public class FavoriteTheaterResponseDto {
 
     private final Long id;
-    private final String theaterName;
-    private final String theaterId;
+    private final String fcltynm;
+    private final String mt10id;
     private final boolean isFavorited;
 
-    public FavoriteTheaterResponseDto(Long id, String theaterName, String theaterId, boolean isFavorited) {
+    public FavoriteTheaterResponseDto(Long id, String fcltynm, String mt10id, boolean isFavorited) {
         this.id = id;
-        this.theaterName = theaterName;
-        this.theaterId = theaterId;
+        this.fcltynm = fcltynm;
+        this.mt10id = mt10id;
         this.isFavorited = isFavorited;
 
     }

@@ -2,6 +2,7 @@ package com.team6.backend.favorite.theater.controller;
 
 import com.team6.backend.favorite.theater.dto.FavoriteTheaterRequestDto;
 import com.team6.backend.favorite.theater.dto.FavoriteTheaterResponseDto;
+import com.team6.backend.favorite.theater.dto.FavoriteTheaterToggleResponseDto;
 import com.team6.backend.favorite.theater.service.FavoriteTheaterService;
 import com.team6.backend.security.jwt.JwtUtil;
 import org.springframework.http.ResponseEntity;
@@ -24,18 +25,36 @@ public class FavoriteTheaterController {
     }
 
     @PostMapping("/toggle")
-    public ResponseEntity<String> toggleFavoriteTheater(@RequestBody FavoriteTheaterRequestDto request, HttpServletRequest httpServletRequest) {
+    public ResponseEntity<FavoriteTheaterToggleResponseDto> toggleFavoriteTheater(
+            @RequestBody FavoriteTheaterRequestDto request,
+            HttpServletRequest httpServletRequest) {
+
         String accessToken = jwtUtil.getAccessTokenFromHeader(httpServletRequest);
         if (accessToken == null) {
-            return ResponseEntity.badRequest().body("Invalid token.");
+            return ResponseEntity.badRequest()
+                    .body(new FavoriteTheaterToggleResponseDto("Invalid token.", false));
         }
+
         String email = jwtUtil.getEmailFromToken(accessToken);
-        favoriteTheaterService.toggleFavoriteTheater(request.getTheaterId(), email);
-        return ResponseEntity.ok("Favorite theater status toggled successfully.");
+
+
+        // Toggle favorite status and get the new status
+        boolean isFavorited = favoriteTheaterService.toggleFavoriteTheater(request.getMt10id(), email);
+
+        // Create response DTO
+        FavoriteTheaterToggleResponseDto response = new FavoriteTheaterToggleResponseDto(
+                "Favorite theater status toggled successfully.",
+                isFavorited
+        );
+
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/favorites")
+
+
+    @GetMapping("/mypage")
     public ResponseEntity<List<FavoriteTheaterResponseDto>> getFavoriteTheaterList(HttpServletRequest httpServletRequest) {
+
 
         String accessToken = jwtUtil.getAccessTokenFromHeader(httpServletRequest);
         if (accessToken == null) {
@@ -47,8 +66,8 @@ public class FavoriteTheaterController {
                 .stream()
                 .map(theater -> new FavoriteTheaterResponseDto(
                         theater.getId(),
-                        theater.getTheaterName(),
-                        theater.getTheaterId(),
+                        theater.getFcltynm(),
+                        theater.getMt10id(),
                         theater.isFavorited()
                 ))
                 .collect(Collectors.toList());

@@ -5,6 +5,7 @@ import com.team6.backend.member.dto.request.MemberLoginRequestDto;
 import com.team6.backend.member.dto.request.MemberSignupRequestDto;
 import com.team6.backend.member.service.MemberService;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class MemberController {
 
     // 회원가입
     @PostMapping("/member/signup")
-    public ResponseEntity<ResponseMessage<Void>> signup(@RequestBody MemberSignupRequestDto requestDto) {
+    public ResponseEntity<ResponseMessage<Void>> signup(@RequestBody @Valid MemberSignupRequestDto requestDto) {
         memberService.signup(requestDto);
         return new ResponseEntity<>(new ResponseMessage<>("회원가입 성공", null), HttpStatus.CREATED);
     }

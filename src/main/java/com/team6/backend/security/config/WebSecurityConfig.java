@@ -72,7 +72,7 @@ public class WebSecurityConfig {
             public CorsConfiguration getCorsConfiguration(@Nullable HttpServletRequest request) {
                 CorsConfiguration configuration = new CorsConfiguration();
 
-                configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:5173"));
+                configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:5173", "https://encorehub.vercel.app/", "https://api.encorehub.kro.kr"));
                 configuration.setAllowedMethods(Collections.singletonList("*"));
                 configuration.setAllowCredentials(true);
                 configuration.setAllowedHeaders(Collections.singletonList("*"));
@@ -95,8 +95,8 @@ public class WebSecurityConfig {
                         .requestMatchers("/api/member/**").permitAll()
                         .requestMatchers("/api/openapi/theaters/**").permitAll()  // Exclude /api/theater/** from security
                         .requestMatchers("/api/theaters/**").permitAll()  // Exclude /api/theaters/** from security
-                        .requestMatchers("/api/region/**").permitAll()   // Exclude /api/region/** from security
-                        .requestMatchers("/api/boxoffice/**").permitAll()   // Exclude /api/region/** from security
+                        .requestMatchers("/api/region/**", "/oauth/token").permitAll()   // Exclude /api/region/** from security
+                        .requestMatchers("/api/boxoffice/**", "/oauth/kakao/callback/**", "/login/kakao/**", "/oauth2/authorization/kakao/**").permitAll()   // Exclude /api/region/** from security
                         .anyRequest().authenticated()
         );
 

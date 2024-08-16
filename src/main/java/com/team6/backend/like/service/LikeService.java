@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -34,19 +35,22 @@ public class LikeService {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        Like like = likeRepository.findByMemberAndPfmc(member, pfmc)
-                .orElseGet(() -> new Like(member, pfmc, false)); // 없을 경우 새로 생성
+        Optional<Like> existingLike = likeRepository.findByMemberAndPfmc(member, pfmc);
 
-        like.toggleLiked(); // 상태 변경
-        likeRepository.save(like);
+        if (existingLike.isPresent()) {
+            likeRepository.delete(existingLike.get());
+        } else {
+            Like like = new Like(member, pfmc);
+            likeRepository.save(like);
+        }
     }
 
-    // 특정 공연의 좋아요 수 조회
+    // 좋아요 수 조회 메서드 추가
     public long getLikeCount(String mt20id) {
         Pfmc pfmc = pfmcRepository.findById(mt20id)
                 .orElseThrow(() -> new ResourceNotFoundException("Performance not found"));
 
-        return likeRepository.countByPfmcAndLiked(pfmc, true);
+        return likeRepository.countByPfmc(pfmc);
     }
 
     public List<LikedPfmcResponseDto> getLikedPerformancesByMember(String email) {
@@ -65,12 +69,11 @@ public class LikeService {
                             pfmc.getMt20id(),
                             pfmc.getPrfnm(),
                             pfmc.getPoster(),
-                            like.isLiked()  // 좋아요 상태
+                            like.isLiked()
                     );
                 })
                 .collect(Collectors.toList());
     }
-
 
     // 특정 공연에 사용자가 좋아요를 눌렀는지 확인
     public boolean isLiked(String mt20id, String email) {
