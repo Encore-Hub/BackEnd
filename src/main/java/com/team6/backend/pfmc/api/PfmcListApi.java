@@ -40,7 +40,7 @@ public class PfmcListApi {
             Date currentDate = new Date();
             Calendar cal = Calendar.getInstance();
             cal.setTime(currentDate);
-            cal.add(Calendar.MONTH, 3); // 몇개월
+            cal.add(Calendar.MONTH, 9); // 몇개월
             String stdate = formatter.format(currentDate);
             String eddate = formatter.format(cal.getTime());
 
