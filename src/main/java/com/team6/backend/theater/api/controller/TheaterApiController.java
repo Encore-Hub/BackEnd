@@ -25,39 +25,20 @@ public class TheaterApiController {
 
     private static final Logger logger = LoggerFactory.getLogger(TheaterApiController.class);
 
-    private final JobLauncher jobLauncher;
-    private final Job myJob;
+
     private final TheaterListService theaterListService;
     private final TheaterDetailService theaterDetailService;
     private final TheaterPfmcDetailService theaterPfmcDetailService;
 
     @Autowired
-    public TheaterApiController(JobLauncher jobLauncher, Job myJob,
+    public TheaterApiController(
                                 TheaterListService theaterListService,
                                 TheaterDetailService theaterDetailService,
                                 TheaterPfmcDetailService theaterPfmcDetailService) {
-        this.jobLauncher = jobLauncher;
-        this.myJob = myJob;
+
         this.theaterListService = theaterListService;
         this.theaterDetailService = theaterDetailService;
         this.theaterPfmcDetailService = theaterPfmcDetailService;
-    }
-
-    @PutMapping("/update-all")
-    public ResponseEntity<String> updateAllTheaterData() {
-        JobParameters jobParameters = new JobParametersBuilder()
-                .addLong("timestamp", System.currentTimeMillis())
-                .toJobParameters();
-
-        try {
-            logger.debug("Starting batch job with parameters: {}", jobParameters);
-            JobExecution jobExecution = jobLauncher.run(myJob, jobParameters);
-            logger.debug("Batch job started with status: {}", jobExecution.getStatus());
-            return ResponseEntity.ok("Batch job started with status: " + jobExecution.getStatus());
-        } catch (Exception e) {
-            logger.error("Error starting batch job", e);
-            throw new TheaterException(ErrorCode.INVALID_THEATER_DATA);
-        }
     }
 
     @PostMapping("/save-list")
