@@ -39,7 +39,7 @@ public class TheaterService {
         // 공연장 리스트에서 "폐관" 상태의 공연장을 필터링하고 DTO로 변환
         return theaterPfmcDetails.stream()
                 .filter(theater -> !theater.getFcltynm().contains("폐관"))
-                .map(theater -> new RegionTheaterResponseDto(theater.getMt10id(), theater.getFcltynm()))
+                .map(theater -> new RegionTheaterResponseDto(theater.getMt10id(), theater.getFcltynm(), theater.getAdres(), theater.getLa(),theater.getLo()))
                 .collect(Collectors.toList());
     }
 
