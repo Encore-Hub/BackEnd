@@ -4,6 +4,7 @@ import com.team6.backend.common.exception.ErrorCode;
 import com.team6.backend.common.exception.TheaterException;
 import com.team6.backend.theater.api.service.TheaterDetailService;
 import com.team6.backend.theater.api.service.TheaterListService;
+import com.team6.backend.theater.api.service.TheaterPfmcDetailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
@@ -28,15 +29,18 @@ public class TheaterApiController {
     private final Job myJob;
     private final TheaterListService theaterListService;
     private final TheaterDetailService theaterDetailService;
+    private final TheaterPfmcDetailService theaterPfmcDetailService;
 
     @Autowired
     public TheaterApiController(JobLauncher jobLauncher, Job myJob,
                                 TheaterListService theaterListService,
-                                TheaterDetailService theaterDetailService) {
+                                TheaterDetailService theaterDetailService,
+                                TheaterPfmcDetailService theaterPfmcDetailService) {
         this.jobLauncher = jobLauncher;
         this.myJob = myJob;
         this.theaterListService = theaterListService;
         this.theaterDetailService = theaterDetailService;
+        this.theaterPfmcDetailService = theaterPfmcDetailService;
     }
 
     @PutMapping("/update-all")
@@ -74,6 +78,17 @@ public class TheaterApiController {
             return ResponseEntity.ok("Theater details updated successfully.");
         } catch (Exception e) {
             logger.error("Error saving theater details", e);
+            throw new TheaterException(ErrorCode.INVALID_THEATER_DATA);
+        }
+    }
+
+    @PostMapping("/save-pfmc-details")
+    public ResponseEntity<String> savePfmcDetails() {
+        try {
+            theaterPfmcDetailService.fetchAndSaveTheaterPfmcDetails();
+            return ResponseEntity.ok("Theater PFMC details updated successfully.");
+        } catch (Exception e) {
+            logger.error("Error saving PFMC theater details", e);
             throw new TheaterException(ErrorCode.INVALID_THEATER_DATA);
         }
     }

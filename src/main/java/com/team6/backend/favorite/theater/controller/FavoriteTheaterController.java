@@ -37,6 +37,7 @@ public class FavoriteTheaterController {
 
         String email = jwtUtil.getEmailFromToken(accessToken);
 
+
         // Toggle favorite status and get the new status
         boolean isFavorited = favoriteTheaterService.toggleFavoriteTheater(request.getMt10id(), email);
 
@@ -68,9 +69,9 @@ public class FavoriteTheaterController {
                         theater.getFcltynm(),
                         theater.getMt10id(),
                         theater.isFavorited()
-
                 ))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(favoriteTheaters);
+
     }
 }

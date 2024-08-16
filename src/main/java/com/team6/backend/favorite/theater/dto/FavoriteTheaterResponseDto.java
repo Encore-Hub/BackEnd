@@ -16,6 +16,5 @@ public class FavoriteTheaterResponseDto {
         this.mt10id = mt10id;
         this.isFavorited = isFavorited;
 
-
     }
 }

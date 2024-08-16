@@ -31,6 +31,7 @@ public class FavoriteTheaterService {
     private TheaterDetailRepository theaterDetailRepository;
 
     @Transactional
+
     public boolean toggleFavoriteTheater(String theaterId, String email) {
         log.debug("Toggling favorite Theater for theater ID {} and email {}", theaterId, email);
 
@@ -94,8 +95,6 @@ public class FavoriteTheaterService {
                         ft.getTheaterDetail().getMt10id(), // Theater ID
                         ft.isFavorited()
                 ))
-
-
                 .collect(Collectors.toList());
     }
 }
